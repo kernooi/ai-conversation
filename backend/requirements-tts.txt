@@ -1,0 +1,18 @@
+# OPTIONAL — text-to-speech / voice cloning (XTTS v2). Heavy; needs PyTorch.
+#
+# Install PyTorch FIRST, then this file, so coqui-tts doesn't pull the wrong build:
+#
+#   GPU machine (CUDA, Python 3.11 — no 3.13 CUDA wheels yet):
+#     pip install torch torchaudio --index-url https://download.pytorch.org/whl/cu121
+#
+#   CPU only (works for testing, but synthesis is slow ~15-30s/reply):
+    # pip install torch torchaudio
+#
+#   then:
+    # pip install -r requirements-tts.txt
+#
+# Voice clip conversion (mp3/m4a/ogg → wav) also needs ffmpeg on PATH:
+#     winget install ffmpeg
+
+coqui-tts>=0.24.0
+pydub>=0.25.1

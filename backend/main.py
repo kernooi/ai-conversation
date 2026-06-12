@@ -1,15 +1,48 @@
+import asyncio
 import json
+import os
+import tempfile
+import uuid
+from contextlib import asynccontextmanager
 
-from fastapi import BackgroundTasks, FastAPI, HTTPException
+from fastapi import BackgroundTasks, FastAPI, File, HTTPException, UploadFile
+from fastapi.concurrency import run_in_threadpool
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import StreamingResponse
+from fastapi.responses import FileResponse, StreamingResponse
 from pydantic import BaseModel
 
 import memory
 import ollama_client
+import stt
+import tts
 from config import settings
 
-app = FastAPI(title="AI Conversation Backend")
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Preload models into VRAM at startup so the first request of each kind
+    # isn't a cold load. Run them concurrently; never fail startup on error.
+    warmers = []
+    if settings.warm_up_on_start:
+        warmers.append(("LLM", ollama_client.warm_up()))
+    if settings.warm_up_stt:
+        warmers.append(("STT", run_in_threadpool(stt.warm_up)))
+    if settings.warm_up_tts and tts.available():
+        warmers.append(("TTS", run_in_threadpool(tts.warm_up)))
+
+    if warmers:
+        print(f"[warm-up] preloading: {', '.join(name for name, _ in warmers)}…")
+        results = await asyncio.gather(*(c for _, c in warmers), return_exceptions=True)
+        for (name, _), result in zip(warmers, results):
+            if isinstance(result, Exception):
+                print(f"[warm-up] {name} skipped: {result}")
+        print("[warm-up] done")
+
+    yield
+    await ollama_client.aclose()
+
+
+app = FastAPI(title="AI Conversation Backend", lifespan=lifespan)
 
 app.add_middleware(
     CORSMiddleware,
@@ -30,6 +63,17 @@ class ChatRequest(BaseModel):
 class ChatResponse(BaseModel):
     response: str
     session_id: str
+
+
+class TranscribeResponse(BaseModel):
+    text: str
+    language: str
+
+
+class TTSRequest(BaseModel):
+    text: str
+    voice: str | None = None
+    language: str | None = None
 
 
 # ── Helpers ───────────────────────────────────────────────────────────────────
@@ -122,3 +166,49 @@ async def chat_stream(req: ChatRequest, background_tasks: BackgroundTasks):
 async def clear_session(session_id: str):
     memory.sessions.pop(session_id, None)
     return {"cleared": session_id}
+
+
+# ── Voice: speech-to-text ─────────────────────────────────────────────────────
+
+@app.post("/transcribe", response_model=TranscribeResponse)
+async def transcribe(audio: UploadFile = File(...)):
+    """Transcribe uploaded audio (webm/wav/mp3/etc.) to text via Whisper."""
+    suffix = os.path.splitext(audio.filename or "")[1] or ".webm"
+    tmp_path = os.path.join(tempfile.gettempdir(), f"stt_{uuid.uuid4().hex}{suffix}")
+    try:
+        with open(tmp_path, "wb") as f:
+            f.write(await audio.read())
+        result = await run_in_threadpool(stt.transcribe, tmp_path)
+        return TranscribeResponse(**result)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Transcription failed: {e}")
+    finally:
+        if os.path.exists(tmp_path):
+            os.remove(tmp_path)
+
+
+# ── Voice: text-to-speech (cloning) ───────────────────────────────────────────
+
+@app.get("/voices")
+async def voices():
+    """List available reference voices for cloning."""
+    return {"voices": tts.list_voices(), "default": settings.default_voice}
+
+
+@app.post("/tts")
+async def synthesize(req: TTSRequest, background_tasks: BackgroundTasks):
+    """Synthesize speech in a cloned voice. Returns a wav file."""
+    if not req.text.strip():
+        raise HTTPException(status_code=400, detail="text is empty")
+
+    out_path = os.path.join(tempfile.gettempdir(), f"tts_{uuid.uuid4().hex}.wav")
+    try:
+        await run_in_threadpool(tts.synthesize, req.text, out_path, req.voice, req.language)
+    except FileNotFoundError as e:
+        raise HTTPException(status_code=404, detail=str(e))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"TTS failed: {e}")
+
+    # Clean up the temp file after the response is sent
+    background_tasks.add_task(lambda: os.path.exists(out_path) and os.remove(out_path))
+    return FileResponse(out_path, media_type="audio/wav", filename="speech.wav")

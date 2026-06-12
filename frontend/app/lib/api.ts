@@ -57,3 +57,37 @@ export async function* streamMessage(req: ChatRequest): AsyncGenerator<string> {
 export async function clearSession(sessionId: string): Promise<void> {
   await fetch(`${API_BASE}/session/${sessionId}`, { method: "DELETE" });
 }
+
+// ── Voice: speech-to-text ──
+
+export async function transcribe(audio: Blob): Promise<{ text: string; language: string }> {
+  const form = new FormData();
+  // Filename extension hints the backend at the container format
+  form.append("audio", audio, "recording.webm");
+
+  const res = await fetch(`${API_BASE}/transcribe`, { method: "POST", body: form });
+  if (!res.ok) throw new Error(`Transcription error ${res.status}: ${await res.text()}`);
+  return res.json() as Promise<{ text: string; language: string }>;
+}
+
+// ── Voice: text-to-speech (cloned voice) ──
+
+export async function listVoices(): Promise<{ voices: string[]; default: string }> {
+  const res = await fetch(`${API_BASE}/voices`);
+  if (!res.ok) throw new Error(`Voices error ${res.status}`);
+  return res.json() as Promise<{ voices: string[]; default: string }>;
+}
+
+export async function synthesizeSpeech(
+  text: string,
+  voice?: string,
+  language?: string
+): Promise<Blob> {
+  const res = await fetch(`${API_BASE}/tts`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ text, voice, language }),
+  });
+  if (!res.ok) throw new Error(`TTS error ${res.status}: ${await res.text()}`);
+  return res.blob();
+}
