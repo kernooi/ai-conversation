@@ -2,6 +2,16 @@ import { ChatRequest, ChatResponse } from "./types";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
 
+export class ApiError extends Error {
+  constructor(
+    public status: number,
+    message: string
+  ) {
+    super(message);
+    this.name = "ApiError";
+  }
+}
+
 export async function sendMessage(req: ChatRequest): Promise<ChatResponse> {
   const res = await fetch(`${API_BASE}/chat`, {
     method: "POST",
@@ -58,7 +68,7 @@ export async function clearSession(sessionId: string): Promise<void> {
   await fetch(`${API_BASE}/session/${sessionId}`, { method: "DELETE" });
 }
 
-// ── Voice: speech-to-text ──
+// Voice: speech-to-text
 
 export async function transcribe(audio: Blob): Promise<{ text: string; language: string }> {
   const form = new FormData();
@@ -70,7 +80,7 @@ export async function transcribe(audio: Blob): Promise<{ text: string; language:
   return res.json() as Promise<{ text: string; language: string }>;
 }
 
-// ── Voice: text-to-speech (cloned voice) ──
+// Voice: text-to-speech (cloned voice)
 
 export async function listVoices(): Promise<{ voices: string[]; default: string }> {
   const res = await fetch(`${API_BASE}/voices`);
@@ -88,6 +98,6 @@ export async function synthesizeSpeech(
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ text, voice, language }),
   });
-  if (!res.ok) throw new Error(`TTS error ${res.status}: ${await res.text()}`);
+  if (!res.ok) throw new ApiError(res.status, `TTS error ${res.status}: ${await res.text()}`);
   return res.blob();
 }

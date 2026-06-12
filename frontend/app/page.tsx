@@ -45,7 +45,10 @@ export default function Home() {
   useEffect(() => void (voiceModeRef.current = voiceMode), [voiceMode]);
   useEffect(() => void (voiceRef.current = voice), [voice]);
 
-  const speech = useSpeechQueue(voiceRef);
+  const speech = useSpeechQueue(voiceRef, (message) => {
+    setError(message);
+    setVoiceMode(false);
+  });
 
   const handleSend = useCallback(
     async (text: string) => {
@@ -119,7 +122,7 @@ export default function Home() {
           </div>
           <div>
             <h1 className="text-zinc-100 text-sm font-semibold leading-none">AI Assistant</h1>
-            <p className="text-zinc-500 text-xs mt-0.5">Local · Ollama + Whisper + XTTS</p>
+            <p className="text-zinc-500 text-xs mt-0.5">Local · Ollama + Whisper + CosyVoice3</p>
           </div>
         </div>
         <div className="flex items-center gap-3">
@@ -127,6 +130,7 @@ export default function Home() {
             voiceMode={voiceMode}
             onToggle={(on) => {
               setVoiceMode(on);
+              if (on) speech.retry();
               if (!on) speech.reset();
             }}
             voice={voice}

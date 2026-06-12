@@ -1,20 +1,22 @@
 "use client";
 
 import { RefObject, useCallback, useRef } from "react";
-import { synthesizeSpeech } from "./api";
+import { ApiError, synthesizeSpeech } from "./api";
 
 /**
  * Plays synthesized speech sentence-by-sentence with overlap:
  * each enqueued sentence starts synthesizing immediately (in parallel), while
  * playback happens strictly in enqueue order. So sentence N+1 is being
- * synthesized on the server while sentence N is still playing — cutting
+ * synthesized on the server while sentence N is still playing, cutting
  * time-to-first-audio to roughly (first sentence gen + first sentence synth).
  */
-export function useSpeechQueue(voiceRef: RefObject<string>) {
+export function useSpeechQueue(voiceRef: RefObject<string>, onError?: (message: string) => void) {
   const queueRef = useRef<Array<Promise<Blob | null>>>([]);
   const playingRef = useRef(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const endCurrentRef = useRef<(() => void) | null>(null);
+  const unavailableRef = useRef(false);
+  const reportedErrorRef = useRef(false);
   // Bumped on reset to invalidate any in-flight playback/queue
   const tokenRef = useRef(0);
 
@@ -58,17 +60,30 @@ export function useSpeechQueue(voiceRef: RefObject<string>) {
   const enqueue = useCallback(
     (text: string) => {
       const t = text.trim();
-      if (!t) return;
+      if (!t || unavailableRef.current) return;
       // Fire synthesis immediately so it overlaps prior playback
-      queueRef.current.push(synthesizeSpeech(t, voiceRef.current).catch(() => null));
+      queueRef.current.push(
+        synthesizeSpeech(t, voiceRef.current).catch((err) => {
+          if (err instanceof ApiError && err.status === 412) {
+            unavailableRef.current = true;
+            queueRef.current = [];
+          }
+          if (!reportedErrorRef.current) {
+            reportedErrorRef.current = true;
+            onError?.(err instanceof Error ? err.message : "TTS failed");
+          }
+          return null;
+        })
+      );
       void drain();
     },
-    [drain, voiceRef]
+    [drain, onError, voiceRef]
   );
 
   const reset = useCallback(() => {
     tokenRef.current += 1;
     queueRef.current = [];
+    reportedErrorRef.current = false;
     if (audioRef.current) {
       audioRef.current.pause();
       audioRef.current = null;
@@ -82,5 +97,10 @@ export function useSpeechQueue(voiceRef: RefObject<string>) {
     playingRef.current = false;
   }, []);
 
-  return { enqueue, reset };
+  const retry = useCallback(() => {
+    unavailableRef.current = false;
+    reportedErrorRef.current = false;
+  }, []);
+
+  return { enqueue, reset, retry };
 }

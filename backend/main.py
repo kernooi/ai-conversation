@@ -1,4 +1,3 @@
-import asyncio
 import json
 import os
 import tempfile
@@ -21,22 +20,25 @@ from config import settings
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # Preload models into VRAM at startup so the first request of each kind
-    # isn't a cold load. Run them concurrently; never fail startup on error.
-    warmers = []
-    if settings.warm_up_on_start:
-        warmers.append(("LLM", ollama_client.warm_up()))
-    if settings.warm_up_stt:
-        warmers.append(("STT", run_in_threadpool(stt.warm_up)))
-    if settings.warm_up_tts and tts.available():
-        warmers.append(("TTS", run_in_threadpool(tts.warm_up)))
+    # isn't a cold load. Run GPU-heavy warm-ups one at a time; loading Ollama,
+    # Whisper, and CosyVoice3 concurrently can stall or OOM a single GPU.
+    async def run_warmer(name: str, coro) -> None:
+        print(f"[warm-up] preloading: {name}...")
+        try:
+            await coro
+        except Exception as e:
+            print(f"[warm-up] {name} skipped: {e}")
 
-    if warmers:
-        print(f"[warm-up] preloading: {', '.join(name for name, _ in warmers)}…")
-        results = await asyncio.gather(*(c for _, c in warmers), return_exceptions=True)
-        for (name, _), result in zip(warmers, results):
-            if isinstance(result, Exception):
-                print(f"[warm-up] {name} skipped: {result}")
-        print("[warm-up] done")
+    if settings.warm_up_on_start:
+        await run_warmer("LLM", ollama_client.warm_up())
+    if settings.warm_up_tts:
+        if tts.available():
+            await run_warmer("TTS", run_in_threadpool(tts.warm_up))
+        else:
+            print("[warm-up] TTS skipped: CosyVoice3 source/deps not available")
+    if settings.warm_up_stt:
+        await run_warmer("STT", run_in_threadpool(stt.warm_up))
+    print("[warm-up] done")
 
     yield
     await ollama_client.aclose()
@@ -53,7 +55,7 @@ app.add_middleware(
 )
 
 
-# ── Request / Response models ─────────────────────────────────────────────────
+# Request / response models
 
 class ChatRequest(BaseModel):
     message: str
@@ -76,7 +78,7 @@ class TTSRequest(BaseModel):
     language: str | None = None
 
 
-# ── Helpers ───────────────────────────────────────────────────────────────────
+# Helpers
 
 async def _maybe_summarize(session_id: str) -> None:
     if not memory.should_summarize(session_id, settings.summarize_after):
@@ -90,21 +92,33 @@ async def _maybe_summarize(session_id: str) -> None:
         summary = await ollama_client.summarize(history_text, session.summary)
         memory.apply_summary(session_id, summary)
     except Exception:
-        # Summarization failure is non-critical — silently skip
+        # Summarization failure is non-critical; silently skip.
         pass
 
 
-# ── Routes ────────────────────────────────────────────────────────────────────
+# Routes
 
 @app.get("/health")
 async def health():
     try:
         models = await ollama_client.list_models()
+        try:
+            running_models = await ollama_client.list_running_models()
+        except Exception as e:
+            running_models = [{"error": str(e)}]
         model_available = any(settings.model_name in m for m in models)
         return {
             "status": "ok",
             "model": settings.model_name,
             "model_available": model_available,
+            "ollama_options": {
+                "think": ollama_client.think_setting(),
+                "keep_alive": settings.keep_alive,
+                "num_ctx": settings.num_ctx,
+                "num_predict": settings.num_predict,
+                "temperature": settings.temperature,
+            },
+            "running_models": running_models,
             "available_models": models,
         }
     except Exception as e:
@@ -168,7 +182,7 @@ async def clear_session(session_id: str):
     return {"cleared": session_id}
 
 
-# ── Voice: speech-to-text ─────────────────────────────────────────────────────
+# Voice: speech-to-text
 
 @app.post("/transcribe", response_model=TranscribeResponse)
 async def transcribe(audio: UploadFile = File(...)):
@@ -187,7 +201,7 @@ async def transcribe(audio: UploadFile = File(...)):
             os.remove(tmp_path)
 
 
-# ── Voice: text-to-speech (cloning) ───────────────────────────────────────────
+# Voice: text-to-speech (cloning)
 
 @app.get("/voices")
 async def voices():
@@ -206,6 +220,8 @@ async def synthesize(req: TTSRequest, background_tasks: BackgroundTasks):
         await run_in_threadpool(tts.synthesize, req.text, out_path, req.voice, req.language)
     except FileNotFoundError as e:
         raise HTTPException(status_code=404, detail=str(e))
+    except tts.TTSConfigError as e:
+        raise HTTPException(status_code=412, detail=str(e))
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"TTS failed: {e}")
 

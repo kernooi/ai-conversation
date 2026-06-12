@@ -1,76 +1,147 @@
-"""Text-to-speech via Coqui XTTS v2, with voice cloning. GPU-optimized.
+"""Text-to-speech via FunAudioLLM CosyVoice3.
 
-Voice cloning works from a short reference clip: drop a 6-30s clean audio file
-of the target voice into the `voices/` folder (e.g. voices/alice.mp3), then
-request voice="alice". XTTS synthesizes new speech in that voice.
+CosyVoice3 is used in zero-shot voice cloning mode. Put a 3-30s reference clip
+in `voices/` and provide the matching transcript either as `voices/<voice>.txt`
+or via `COSYVOICE_PROMPT_TEXT` in `.env`.
 
-Accepted reference formats: .wav .mp3 .m4a .ogg .flac .aac
-Non-wav files are auto-converted to wav once and cached next to the original
-(requires ffmpeg on PATH).
-
-Performance:
-- The model is loaded once and cached (lazy).
-- Speaker conditioning latents are computed once per voice and cached, so
-  repeated (per-sentence) synthesis skips the expensive speaker-embedding step
-  and goes straight to generation. This is the main GPU speed win.
-- Synthesis is serialized with a lock (one GPU job at a time) and is blocking,
-  so callers run `synthesize()` in a thread (see main.py).
+The frontend still calls the same `/tts` endpoint; this module owns the
+CosyVoice3 backend engine.
 """
 
+from __future__ import annotations
+
 import os
+import sys
 import threading
+import time
+from pathlib import Path
 
 from config import settings
 
-_tts = None
-# XTTS runs on a single GPU; serialize synthesis so concurrent per-sentence
-# requests don't collide on the model / device.
+_model = None
+_model_lock = threading.Lock()
 _synth_lock = threading.Lock()
-# voice-clip path+mtime -> (gpt_cond_latent, speaker_embedding)
-_latent_cache: dict[str, tuple] = {}
 
 SUPPORTED_EXTS = (".wav", ".mp3", ".m4a", ".ogg", ".flac", ".aac")
+REQUIRED_MODEL_FILES = (
+    "cosyvoice3.yaml",
+    "llm.pt",
+    "llm.rl.pt",
+    "flow.pt",
+    "hift.pt",
+    "campplus.onnx",
+    "speech_tokenizer_v3.onnx",
+    "speech_tokenizer_v3.batch.onnx",
+)
+
+
+class TTSConfigError(RuntimeError):
+    """Raised when TTS is not configured enough to run."""
+
+
+def _backend_dir() -> Path:
+    return Path(__file__).resolve().parent
+
+
+def _resolve_path(path: str) -> Path:
+    candidate = Path(path)
+    if candidate.is_absolute():
+        return candidate
+    return _backend_dir() / candidate
+
+
+def _truthy(value: bool | str) -> bool:
+    if isinstance(value, bool):
+        return value
+    return value.strip().lower() in {"1", "true", "yes", "on"}
+
+
+def _cosyvoice_root() -> Path:
+    return _resolve_path(settings.cosyvoice_repo_dir)
+
+
+def _configure_import_path() -> None:
+    root = _cosyvoice_root()
+    matcha = root / "third_party" / "Matcha-TTS"
+    for path in (root, matcha):
+        text = str(path)
+        if text not in sys.path:
+            sys.path.insert(0, text)
+
+
+def _import_automodel():
+    root = _cosyvoice_root()
+    if not root.exists():
+        raise TTSConfigError(
+            f"CosyVoice repo not found at {root}. Clone "
+            "https://github.com/FunAudioLLM/CosyVoice with submodules, or update "
+            "COSYVOICE_REPO_DIR."
+        )
+    _configure_import_path()
+    from cosyvoice.cli.cosyvoice import AutoModel
+
+    return AutoModel
 
 
 def available() -> bool:
-    """True if the TTS stack (torch + Coqui) is importable in this env."""
+    """True if the CosyVoice source and imports are available."""
     try:
+        _import_automodel()
         import torch  # noqa: F401
-        from TTS.api import TTS  # noqa: F401
+        import torchaudio  # noqa: F401
 
         return True
     except Exception:
         return False
 
 
-def _resolve_device() -> str:
-    """Resolve the TTS device. 'auto' picks cuda if available, else cpu."""
-    import torch
+def _model_dir() -> Path:
+    configured = _resolve_path(settings.cosyvoice_model_dir)
+    missing = [name for name in REQUIRED_MODEL_FILES if not (configured / name).exists()]
+    if configured.exists() and not missing:
+        return configured
 
-    if settings.tts_device == "auto":
-        return "cuda" if torch.cuda.is_available() else "cpu"
-    if settings.tts_device == "cuda" and not torch.cuda.is_available():
-        return "cpu"  # asked for GPU but none present — fall back
-    return settings.tts_device
+    if not settings.cosyvoice_auto_download:
+        raise TTSConfigError(
+            f"CosyVoice3 model not found at {configured}. Download "
+            f"{settings.cosyvoice_model_repo} there, or set COSYVOICE_AUTO_DOWNLOAD=true."
+        )
+
+    from huggingface_hub import snapshot_download
+
+    configured.mkdir(parents=True, exist_ok=True)
+    print(
+        f"[tts] downloading CosyVoice3 model {settings.cosyvoice_model_repo} to {configured}; "
+        f"missing={missing}",
+        flush=True,
+    )
+    snapshot_download(repo_id=settings.cosyvoice_model_repo, local_dir=str(configured))
+    if not (configured / "cosyvoice3.yaml").exists():
+        raise TTSConfigError(f"Downloaded model is missing cosyvoice3.yaml: {configured}")
+    return configured
 
 
-def _get_tts():
-    global _tts
-    if _tts is None:
-        from TTS.api import TTS
+def _get_model():
+    global _model
+    if _model is not None:
+        return _model
 
-        device = _resolve_device()
-        note = "" if device == "cuda" else " (slow on CPU)"
-        print(f"[tts] loading XTTS on {device}{note}")
-        _tts = TTS(settings.tts_model).to(device)
-    return _tts
+    with _model_lock:
+        if _model is not None:
+            return _model
+        AutoModel = _import_automodel()
+        model_dir = _model_dir()
+        print(f"[tts] loading CosyVoice3 from {model_dir}", flush=True)
+        _model = AutoModel(
+            model_dir=str(model_dir),
+            fp16=_truthy(settings.cosyvoice_fp16),
+            load_vllm=False,
+            load_trt=False,
+        )
+        return _model
 
 
 def list_voices() -> list[str]:
-    """Available reference voices (filenames without extension) in the voices dir.
-
-    A name appears once even if both e.g. alice.mp3 and a cached alice.wav exist.
-    """
     if not os.path.isdir(settings.voices_dir):
         return []
     names = {
@@ -81,11 +152,10 @@ def list_voices() -> list[str]:
     return sorted(names)
 
 
-def _find_voice_file(voice: str) -> str:
-    """Locate the reference clip for `voice`, trying each supported extension."""
+def _find_voice_file(voice: str) -> Path:
     for ext in SUPPORTED_EXTS:
-        path = os.path.join(settings.voices_dir, f"{voice}{ext}")
-        if os.path.isfile(path):
+        path = _resolve_path(settings.voices_dir) / f"{voice}{ext}"
+        if path.is_file():
             return path
     raise FileNotFoundError(
         f"Voice '{voice}' not found in {settings.voices_dir}/. "
@@ -93,95 +163,138 @@ def _find_voice_file(voice: str) -> str:
     )
 
 
-def _ensure_wav(src_path: str) -> str:
-    """Return a wav path for `src_path`, converting + caching if it isn't wav."""
-    if src_path.lower().endswith(".wav"):
+def _ensure_wav(src_path: Path) -> Path:
+    """Return a wav prompt path. CosyVoice uses torchaudio soundfile loading."""
+    if src_path.suffix.lower() == ".wav":
         return src_path
 
-    base = os.path.splitext(src_path)[0]
-    wav_path = f"{base}.wav"
-    # Reuse a previous conversion if it's newer than the source
-    if os.path.isfile(wav_path) and os.path.getmtime(wav_path) >= os.path.getmtime(src_path):
+    wav_path = src_path.with_suffix(".wav")
+    if wav_path.is_file() and wav_path.stat().st_mtime >= src_path.stat().st_mtime:
         return wav_path
 
     from pydub import AudioSegment
 
     audio = AudioSegment.from_file(src_path)
-    # Mono 22.05kHz is plenty for XTTS speaker conditioning
-    audio = audio.set_channels(1).set_frame_rate(22050)
+    audio = audio.set_channels(1).set_frame_rate(24000)
     audio.export(wav_path, format="wav")
     return wav_path
 
 
-def _get_latents(speaker_wav: str):
-    """Compute (and cache) XTTS speaker conditioning latents for a voice clip.
+def _voice_prompt_text(voice: str, voice_path: Path) -> str:
+    transcript_path = voice_path.with_suffix(".txt")
+    if transcript_path.is_file():
+        prompt = transcript_path.read_text(encoding="utf-8").strip()
+    else:
+        prompt = settings.cosyvoice_prompt_text.strip()
 
-    Keyed by path + mtime so replacing the clip transparently recomputes.
-    """
-    key = f"{speaker_wav}:{os.path.getmtime(speaker_wav)}"
-    cached = _latent_cache.get(key)
-    if cached is not None:
-        return cached
+    if not prompt:
+        raise TTSConfigError(
+            "CosyVoice3 zero-shot mode needs the transcript of the reference voice. "
+            f"Create {transcript_path.name} next to the voice file, or set "
+            "COSYVOICE_PROMPT_TEXT in backend/.env."
+        )
 
-    model = _get_tts().synthesizer.tts_model
-    gpt_cond_latent, speaker_embedding = model.get_conditioning_latents(
-        audio_path=[speaker_wav]
+    if "<|endofprompt|>" in prompt:
+        return prompt
+    system_prompt = settings.cosyvoice_system_prompt.strip()
+    if not system_prompt:
+        return prompt
+    return f"{system_prompt}<|endofprompt|>{prompt}"
+
+
+def _normalize_text(text: str, language: str | None) -> str:
+    clean = text.strip()
+    if not clean:
+        return clean
+
+    lang = (language or settings.tts_language).lower()
+    if settings.cosyvoice_prefix_language_tokens:
+        if lang.startswith("zh") and not clean.startswith("<|"):
+            return f"<|zh|>{clean}"
+        if lang.startswith("en") and not clean.startswith("<|"):
+            return f"<|en|>{clean}"
+    return clean
+
+
+def synthesize(
+    text: str,
+    out_path: str,
+    voice: str | None = None,
+    language: str | None = None,
+) -> str:
+    """Synthesize `text` to `out_path` using CosyVoice3 zero-shot cloning."""
+    model = _get_model()
+    voice_name = voice or settings.default_voice
+    voice_path = _find_voice_file(voice_name)
+    prompt_wav = _ensure_wav(voice_path)
+    prompt_text = _voice_prompt_text(voice_name, prompt_wav)
+    tts_text = _normalize_text(text, language)
+    started = time.perf_counter()
+
+    with _synth_lock:
+        import torch
+        import torchaudio
+
+        outputs = []
+        mode = settings.cosyvoice_mode.lower()
+        text_frontend = settings.cosyvoice_text_frontend
+        if mode == "cross_lingual":
+            generator = model.inference_cross_lingual(
+                tts_text,
+                str(prompt_wav),
+                stream=False,
+                speed=settings.cosyvoice_speed,
+                text_frontend=text_frontend,
+            )
+        elif mode == "instruct":
+            generator = model.inference_instruct2(
+                tts_text,
+                prompt_text,
+                str(prompt_wav),
+                stream=False,
+                speed=settings.cosyvoice_speed,
+                text_frontend=text_frontend,
+            )
+        else:
+            generator = model.inference_zero_shot(
+                tts_text,
+                prompt_text,
+                str(prompt_wav),
+                stream=False,
+                speed=settings.cosyvoice_speed,
+                text_frontend=text_frontend,
+            )
+
+        for item in generator:
+            outputs.append(item["tts_speech"].detach().cpu())
+
+        if not outputs:
+            raise RuntimeError("CosyVoice3 returned no audio")
+
+        speech = outputs[0] if len(outputs) == 1 else torch.cat(outputs, dim=1)
+        torchaudio.save(out_path, speech, model.sample_rate)
+
+    print(
+        "[tts] cosyvoice3 synth "
+        f"elapsed={time.perf_counter() - started:.2f}s "
+        f"chars={len(text)} voice={voice_name} mode={settings.cosyvoice_mode}",
+        flush=True,
     )
-    _latent_cache[key] = (gpt_cond_latent, speaker_embedding)
-    return _latent_cache[key]
-
-
-def synthesize(text: str, out_path: str, voice: str | None = None,
-               language: str | None = None) -> str:
-    """Synthesize `text` to a wav file at `out_path` in the cloned voice.
-
-    Fast path: cached speaker latents + low-level XTTS inference.
-    Falls back to the simple `tts_to_file` path if the low-level API differs.
-    """
-    tts = _get_tts()
-    speaker_wav = _ensure_wav(_find_voice_file(voice or settings.default_voice))
-    lang = language or settings.tts_language
-
-    with _synth_lock:  # one synthesis at a time on the GPU
-        try:
-            model = tts.synthesizer.tts_model
-            gpt_cond_latent, speaker_embedding = _get_latents(speaker_wav)
-            out = model.inference(
-                text,
-                lang,
-                gpt_cond_latent,
-                speaker_embedding,
-                temperature=settings.tts_temperature,
-                enable_text_splitting=False,  # sentences are already split upstream
-            )
-            tts.synthesizer.save_wav(out["wav"], out_path)
-        except Exception as e:
-            # Internal API changed or unavailable — use the robust public path
-            print(f"[tts] fast path unavailable ({e}); using tts_to_file")
-            tts.tts_to_file(
-                text=text,
-                speaker_wav=speaker_wav,
-                language=lang,
-                file_path=out_path,
-            )
     return out_path
 
 
 def warm_up() -> None:
-    """Preload XTTS into VRAM + cache default-voice latents + warm kernels."""
+    """Load CosyVoice3 and run a tiny synthesis if the default voice is ready."""
     if not available():
-        print("[tts] warm-up skipped: torch/coqui-tts not installed")
+        print("[tts] warm-up skipped: CosyVoice3 source/deps not available", flush=True)
         return
-    _get_tts()
+    _get_model()
     try:
         import tempfile
         import uuid
 
         out = os.path.join(tempfile.gettempdir(), f"warm_{uuid.uuid4().hex}.wav")
-        # Goes through the fast path → also primes the latent cache
-        synthesize("Hello.", out, settings.default_voice)
+        synthesize("\u4f60\u597d\u3002", out, settings.default_voice, "zh-cn")
         os.remove(out)
-    except FileNotFoundError:
-        pass  # no default voice yet — model is at least loaded into VRAM
-    except Exception:
-        pass
+    except Exception as e:
+        print(f"[tts] warm-up skipped: {e}", flush=True)

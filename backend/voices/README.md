@@ -1,27 +1,36 @@
 # Voice reference clips
 
-Drop reference audio files here to clone voices with XTTS v2.
+Drop reference audio files here to clone voices with CosyVoice3.
 
 ## Requirements for a good clone
-- **Format:** `.mp3`, `.wav`, `.m4a`, `.ogg`, `.flac`, or `.aac` — non-wav files
-  are auto-converted to wav on first use and cached here (needs ffmpeg on PATH).
-- **Length:** 6–30 seconds is the sweet spot
-- **Content:** clean speech, one speaker, minimal background noise/music
-- **Naming:** the filename (without extension) is the voice name
+- **Format:** `.mp3`, `.wav`, `.m4a`, `.ogg`, `.flac`, or `.aac`; non-wav files
+  are auto-converted to wav on first use and cached here.
+- **Length:** 3-30 seconds, clean speech, one speaker.
+- **Transcript:** add a matching `.txt` file with the exact words spoken in the
+  reference clip. Example: `default.wav` should have `default.txt`.
+- **Naming:** the filename without extension is the voice name.
 
 ## Example
-```
+```text
 voices/
-├── default.mp3     ← used when no voice is specified (DEFAULT_VOICE in .env)
-├── alice.mp3       ← request with voice="alice"
-└── friend.wav      ← request with voice="friend"
+  default.mp3
+  default.txt
+  alice.wav
+  alice.txt
 ```
 
-The frontend's voice picker lists every supported file here automatically (via `GET /voices`).
+The frontend voice picker lists supported audio files automatically through
+`GET /voices`.
 
 ## ffmpeg
-Conversion uses ffmpeg under the hood. If it's not installed:
-- **Windows:** `winget install ffmpeg` (then reopen the terminal)
-- Verify with `ffmpeg -version`
+Conversion uses ffmpeg under the hood. If it is not installed:
 
-You do **not** need to convert files yourself — just drop in the `.mp3`.
+```powershell
+winget install ffmpeg
+```
+
+Then reopen the terminal and verify with:
+
+```powershell
+ffmpeg -version
+```

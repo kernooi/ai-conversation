@@ -1,5 +1,5 @@
 # ai-conversation
-clone a person voice and have a conversation with them
+clone a person's voice and have a conversation with them
 
 install ollama 
 
@@ -8,9 +8,10 @@ ollama pull tripolskypetr/qwen3.5-uncensored-aggressive:9b
 backend
 env
 OLLAMA_HOST=http://localhost:11434
-MODEL_NAME=nollama/mythomax-l2-13b:Q4_K_S
+MODEL_NAME=tripolskypetr/qwen3.5-uncensored-aggressive:9b
 SUMMARIZE_AFTER=12
 KEEP_RECENT=6
+OLLAMA_THINK=false
 
 pip install -r requirements.txt
 uvicorn main:app --reload --port 8000
@@ -27,3 +28,8 @@ venv\Scripts\activate
 pip install torch torchaudio --index-url https://download.pytorch.org/whl/cu121
 pip install -r requirements.txt
 pip install -r requirements-tts.txt
+
+CosyVoice3 notes:
+- The CosyVoice source is vendored at `backend/vendor/CosyVoice`.
+- The active model path is configured with `COSYVOICE_MODEL_DIR`.
+- Put `default.txt` next to `default.wav`/`default.mp3` with the exact reference clip transcript.

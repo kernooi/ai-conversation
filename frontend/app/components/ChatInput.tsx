@@ -124,7 +124,7 @@ export default function ChatInput({ onSend, disabled, autoSendVoice = true }: Pr
         <p className="text-red-400 text-xs text-center mt-1.5">{micError}</p>
       ) : (
         <p className="text-zinc-600 text-xs text-center mt-1.5">
-          Tap the mic to speak · Whisper STT + XTTS voice
+          Tap the mic to speak · Whisper STT + CosyVoice3 voice
         </p>
       )}
     </div>

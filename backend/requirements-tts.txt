@@ -1,18 +1,16 @@
-# OPTIONAL — text-to-speech / voice cloning (XTTS v2). Heavy; needs PyTorch.
+# OPTIONAL - text-to-speech / voice cloning with CosyVoice3.
 #
-# Install PyTorch FIRST, then this file, so coqui-tts doesn't pull the wrong build:
+# Install CUDA torch first, then install the CosyVoice3 inference dependencies:
 #
-#   GPU machine (CUDA, Python 3.11 — no 3.13 CUDA wheels yet):
-#     pip install torch torchaudio --index-url https://download.pytorch.org/whl/cu121
+#   python -m pip install torch torchaudio --index-url https://download.pytorch.org/whl/cu121
+#   python -m pip install -r requirements-tts.txt
 #
-#   CPU only (works for testing, but synthesis is slow ~15-30s/reply):
-    # pip install torch torchaudio
+# The CosyVoice source is vendored at vendor/CosyVoice and imported directly.
+# Voice clip conversion (mp3/m4a/ogg -> wav) also needs ffmpeg on PATH:
 #
-#   then:
-    # pip install -r requirements-tts.txt
-#
-# Voice clip conversion (mp3/m4a/ogg → wav) also needs ffmpeg on PATH:
-#     winget install ffmpeg
+#   winget install ffmpeg
 
-coqui-tts>=0.24.0
+-r requirements-cosyvoice3.txt
+openai-whisper==20231117
 pydub>=0.25.1
+wheel>=0.47.0
