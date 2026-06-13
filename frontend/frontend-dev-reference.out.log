@@ -1,0 +1,17 @@
+
+> frontend@0.1.0 dev
+> next dev
+
+▲ Next.js 16.2.9 (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://192.168.1.8:3000
+- Environments: .env.local
+✓ Ready in 556ms
+Creating turbopack project {
+  dir: 'C:\\Users\\User\\OneDrive\\Desktop\\ai-conversation\\frontend',
+  testMode: true
+}
+
+ GET / 200 in 257ms (next.js: 146ms, application-code: 110ms)
+ GET / 200 in 137ms (next.js: 55ms, application-code: 83ms)
+[?25h

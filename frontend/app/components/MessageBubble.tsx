@@ -13,7 +13,7 @@ function formatTime(ts: number) {
 
 export default function MessageBubble({ message, isStreaming }: Props) {
   const isUser = message.role === "user";
-  const isEmpty = message.content === "";
+  const isEmpty = message.content === "" && !message.images?.length;
 
   return (
     <div className={`flex w-full mb-4 ${isUser ? "justify-end" : "justify-start"}`}>
@@ -31,6 +31,19 @@ export default function MessageBubble({ message, isStreaming }: Props) {
               : "bg-zinc-800 text-zinc-100 rounded-bl-sm"
           }`}
         >
+          {message.images && message.images.length > 0 && (
+            <div className="grid grid-cols-2 gap-2 mb-2">
+              {message.images.map((image) => (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  key={image.id}
+                  src={image.url}
+                  alt={image.name}
+                  className="max-h-48 w-full rounded-lg object-cover border border-white/15"
+                />
+              ))}
+            </div>
+          )}
           {isEmpty ? (
             // Blinking cursor while waiting for first chunk
             <span className="inline-block w-2 h-4 bg-zinc-400 rounded-sm animate-pulse align-middle" />

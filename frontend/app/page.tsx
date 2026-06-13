@@ -3,10 +3,17 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { Message } from "@/app/lib/types";
-import { streamMessage, clearSession } from "@/app/lib/api";
+import {
+  analyzeImage,
+  clearSession,
+  getImageGenerationResult,
+  getImageGenerationStatus,
+  startImageGeneration,
+  streamMessage,
+} from "@/app/lib/api";
 import { useSpeechQueue } from "@/app/lib/useSpeechQueue";
 import ChatWindow from "@/app/components/ChatWindow";
-import ChatInput from "@/app/components/ChatInput";
+import ChatInput, { PendingImage } from "@/app/components/ChatInput";
 import VoiceControls from "@/app/components/VoiceControls";
 
 // One session ID per browser tab, lives for the page lifetime
@@ -18,6 +25,12 @@ const SENTENCE_END = /[.!?\u3002\uff01\uff1f\n]/;
 const MIN_SENTENCE_LEN = 12;
 const TTS_BATCH_MIN_CHARS = 90;
 const TTS_BATCH_MAX_SENTENCES = 2;
+const IMAGE_POLL_INTERVAL_MS = 2500;
+const IMAGE_POLL_MAX_ATTEMPTS = 240;
+const EXPLICIT_IMAGE_REQUEST =
+  /\b(generate|draw|create|make|show|visuali[sz]e|render|image|picture|photo)\b|生成|画|圖片|图片|照片|圖像|图像/i;
+const IMAGE_ACTION_REQUEST =
+  /\b(running|run|walking|playing|jumping|flying|swimming|driving|wearing|turn .* into|imagine)\b|跑|奔跑|走|玩|跳|飞|飛|游泳|穿|变成|變成/i;
 
 function joinSpeechParts(parts: string[]): string {
   return parts
@@ -42,6 +55,24 @@ function extractSentences(buffer: string): { sentences: string[]; rest: string }
   return { sentences, rest: buffer.slice(start) };
 }
 
+function shouldGenerateConversationImage(text: string, imageCount: number): boolean {
+  if (EXPLICIT_IMAGE_REQUEST.test(text)) return true;
+  if (imageCount > 0 && IMAGE_ACTION_REQUEST.test(text)) return true;
+  return false;
+}
+
+async function waitForGeneratedImage(jobId: string): Promise<Blob> {
+  for (let attempt = 0; attempt < IMAGE_POLL_MAX_ATTEMPTS; attempt++) {
+    const status = await getImageGenerationStatus(jobId);
+    if (status.status === "done") return getImageGenerationResult(jobId);
+    if (status.status === "error") {
+      throw new Error(status.error || "Image generation failed");
+    }
+    await new Promise((resolve) => setTimeout(resolve, IMAGE_POLL_INTERVAL_MS));
+  }
+  throw new Error("Image generation timed out while waiting for ComfyUI");
+}
+
 export default function Home() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -52,8 +83,16 @@ export default function Home() {
   const [voice, setVoice] = useState("default");
   const voiceModeRef = useRef(voiceMode);
   const voiceRef = useRef(voice);
+  const messageImageUrlsRef = useRef<Set<string>>(new Set());
   useEffect(() => void (voiceModeRef.current = voiceMode), [voiceMode]);
   useEffect(() => void (voiceRef.current = voice), [voice]);
+  useEffect(() => {
+    const imageUrls = messageImageUrlsRef.current;
+    return () => {
+      for (const url of imageUrls) URL.revokeObjectURL(url);
+      imageUrls.clear();
+    };
+  }, []);
 
   const speech = useSpeechQueue(voiceRef, (message) => {
     setError(message);
@@ -61,7 +100,7 @@ export default function Home() {
   });
 
   const handleSend = useCallback(
-    async (text: string) => {
+    async (text: string, images: PendingImage[] = []) => {
       const voiceOn = voiceModeRef.current;
       speech.reset(); // stop any current playback when a new turn starts
 
@@ -69,8 +108,10 @@ export default function Home() {
         id: uuidv4(),
         role: "user",
         content: text,
+        images: images.map(({ id, name, url }) => ({ id, name, url })),
         timestamp: Date.now(),
       };
+      for (const image of images) messageImageUrlsRef.current.add(image.url);
       const aiMsgId = uuidv4();
       const aiMsg: Message = {
         id: aiMsgId,
@@ -84,6 +125,8 @@ export default function Home() {
       setError(null);
 
       let ttsBuffer = "";
+      let imageContext = "";
+      let assistantText = "";
       let speechBatch: string[] = [];
       const flushSpeechBatch = () => {
         if (!speechBatch.length) return;
@@ -105,7 +148,22 @@ export default function Home() {
       };
 
       try {
-        for await (const chunk of streamMessage({ message: text, session_id: SESSION_ID })) {
+        if (images.length > 0) {
+          const analyses = await Promise.all(
+            images.map(async (image, index) => {
+              const result = await analyzeImage(image.file, text);
+              return `Image ${index + 1} (${image.name}):\n${result.description}`;
+            })
+          );
+          imageContext = analyses.join("\n\n");
+        }
+
+        for await (const chunk of streamMessage({
+          message: text,
+          session_id: SESSION_ID,
+          image_context: imageContext || undefined,
+        })) {
+          assistantText += chunk;
           setMessages((prev) =>
             prev.map((m) => (m.id === aiMsgId ? { ...m, content: m.content + chunk } : m))
           );
@@ -133,12 +191,45 @@ export default function Home() {
       }
 
       setIsLoading(false);
+
+      if (shouldGenerateConversationImage(text, images.length)) {
+        void (async () => {
+          try {
+            const job = await startImageGeneration({
+              prompt: text,
+              image_context: imageContext || undefined,
+              assistant_response: assistantText || undefined,
+              reference_image: images[0]?.file,
+            });
+            const blob = await waitForGeneratedImage(job.job_id);
+            const url = URL.createObjectURL(blob);
+            messageImageUrlsRef.current.add(url);
+            setMessages((prev) =>
+              prev.map((m) =>
+                m.id === aiMsgId
+                  ? {
+                      ...m,
+                      images: [
+                        ...(m.images ?? []),
+                        { id: uuidv4(), name: "generated-image.png", url },
+                      ],
+                    }
+                  : m
+              )
+            );
+          } catch (err) {
+            setError(err instanceof Error ? err.message : "Image generation failed");
+          }
+        })();
+      }
     },
     [speech]
   );
 
   const handleNewChat = useCallback(async () => {
     speech.reset();
+    for (const url of messageImageUrlsRef.current) URL.revokeObjectURL(url);
+    messageImageUrlsRef.current.clear();
     setMessages([]);
     setError(null);
     setIsLoading(false);

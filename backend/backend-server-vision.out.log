@@ -1,0 +1,11 @@
+[warm-up] preloading: LLM...
+[warm-up] preloading: TTS...
+[tts] loading CosyVoice3 from D:\ai-conversation-models\Fun-CosyVoice3-0.5B
+Downloading Model to directory: C:\Users\User\.cache\modelscope\hub\pengzhendong/wetext
+Downloading Model to directory: C:\Users\User\.cache\modelscope\hub\pengzhendong/wetext
+[tts] cached CosyVoice3 speaker voice=default elapsed=2.86s
+[tts] cosyvoice3 synth elapsed=5.82s chars=3 voice=default mode=zero_shot
+[warm-up] preloading: STT...
+[stt] loading Whisper 'base' on cpu (int8)
+[warm-up] done
+INFO:     127.0.0.1:63055 - "GET /health HTTP/1.1" 200 OK

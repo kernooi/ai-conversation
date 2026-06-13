@@ -80,6 +80,91 @@ export async function transcribe(audio: Blob): Promise<{ text: string; language:
   return res.json() as Promise<{ text: string; language: string }>;
 }
 
+// Vision: image understanding
+
+export async function analyzeImage(
+  image: File,
+  prompt?: string
+): Promise<{ description: string; model: string }> {
+  const form = new FormData();
+  form.append("image", image, image.name || "image");
+  form.append("prompt", prompt ?? "");
+
+  const res = await fetch(`${API_BASE}/vision/analyze`, { method: "POST", body: form });
+  if (!res.ok) throw new ApiError(res.status, `Vision error ${res.status}: ${await res.text()}`);
+  return res.json() as Promise<{ description: string; model: string }>;
+}
+
+// Image generation
+
+export async function generateImage(req: {
+  prompt: string;
+  image_context?: string;
+  assistant_response?: string;
+}): Promise<Blob> {
+  const res = await fetch(`${API_BASE}/image/generate`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(req),
+  });
+  if (!res.ok) {
+    throw new ApiError(res.status, `Image generation error ${res.status}: ${await res.text()}`);
+  }
+  return res.blob();
+}
+
+export async function startImageGeneration(req: {
+  prompt: string;
+  image_context?: string;
+  assistant_response?: string;
+  reference_image?: File;
+}): Promise<{ job_id: string; status: string }> {
+  if (req.reference_image) {
+    const form = new FormData();
+    form.append("prompt", req.prompt);
+    if (req.image_context) form.append("image_context", req.image_context);
+    if (req.assistant_response) form.append("assistant_response", req.assistant_response);
+    form.append("reference_image", req.reference_image, req.reference_image.name || "reference.png");
+
+    const res = await fetch(`${API_BASE}/image/generate/start`, {
+      method: "POST",
+      body: form,
+    });
+    if (!res.ok) {
+      throw new ApiError(res.status, `Image generation error ${res.status}: ${await res.text()}`);
+    }
+    return res.json() as Promise<{ job_id: string; status: string }>;
+  }
+
+  const res = await fetch(`${API_BASE}/image/generate/start`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(req),
+  });
+  if (!res.ok) {
+    throw new ApiError(res.status, `Image generation error ${res.status}: ${await res.text()}`);
+  }
+  return res.json() as Promise<{ job_id: string; status: string }>;
+}
+
+export async function getImageGenerationStatus(
+  jobId: string
+): Promise<{ job_id: string; status: string; error?: string | null }> {
+  const res = await fetch(`${API_BASE}/image/generate/${jobId}`);
+  if (!res.ok) {
+    throw new ApiError(res.status, `Image generation status error ${res.status}: ${await res.text()}`);
+  }
+  return res.json() as Promise<{ job_id: string; status: string; error?: string | null }>;
+}
+
+export async function getImageGenerationResult(jobId: string): Promise<Blob> {
+  const res = await fetch(`${API_BASE}/image/generate/${jobId}/result`);
+  if (!res.ok) {
+    throw new ApiError(res.status, `Image generation result error ${res.status}: ${await res.text()}`);
+  }
+  return res.blob();
+}
+
 // Voice: text-to-speech (cloned voice)
 
 export async function listVoices(): Promise<{ voices: string[]; default: string }> {

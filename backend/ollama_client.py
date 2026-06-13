@@ -1,5 +1,6 @@
 import json
 import time
+from base64 import b64encode
 from typing import AsyncGenerator
 
 import httpx
@@ -53,6 +54,18 @@ def _chat_payload(messages: list[dict], stream: bool, options: dict | None = Non
         "keep_alive": settings.keep_alive,
         "options": options or _options(),
     }
+
+
+def _vision_options() -> dict:
+    return {
+        "num_ctx": settings.vision_num_ctx,
+        "num_predict": settings.vision_num_predict,
+        "temperature": 0.2,
+    }
+
+
+def vision_model_name() -> str:
+    return settings.vision_model.strip() or settings.model_name
 
 
 def _log_stream_stats(
@@ -152,6 +165,39 @@ async def summarize(history_text: str, existing_summary: str = "") -> str:
     )
     response.raise_for_status()
     return response.json()["response"].strip()
+
+
+async def analyze_image(image_bytes: bytes, prompt: str = "") -> str:
+    """Analyze an image with an Ollama vision model and return text context."""
+    user_prompt = prompt.strip() or "Describe this image in detail."
+    instruction = (
+        "You are a visual analysis model for a chat assistant. Identify what is "
+        "visible in the image, read any text, note important objects, people, "
+        "layout, scene context, and any useful details. Be factual and concise. "
+        f"User request: {user_prompt}"
+    )
+    image_b64 = b64encode(image_bytes).decode("ascii")
+    client = _get_client()
+    response = await client.post(
+        f"{settings.ollama_host}/api/chat",
+        json={
+            "model": vision_model_name(),
+            "messages": [
+                {
+                    "role": "user",
+                    "content": instruction,
+                    "images": [image_b64],
+                }
+            ],
+            "stream": False,
+            "think": think_setting(),
+            "keep_alive": settings.vision_keep_alive,
+            "options": _vision_options(),
+        },
+        timeout=300.0,
+    )
+    response.raise_for_status()
+    return response.json().get("message", {}).get("content", "").strip()
 
 
 async def list_models() -> list[str]:

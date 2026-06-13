@@ -12,6 +12,7 @@ MODEL_NAME=tripolskypetr/qwen3.5-uncensored-aggressive:9b
 SUMMARIZE_AFTER=12
 KEEP_RECENT=6
 OLLAMA_THINK=false
+VISION_MODEL=
 
 pip install -r requirements.txt
 uvicorn main:app --reload --port 8000
@@ -33,3 +34,18 @@ CosyVoice3 notes:
 - The CosyVoice source is vendored at `backend/vendor/CosyVoice`.
 - The active model path is configured with `COSYVOICE_MODEL_DIR`.
 - Put `default.txt` next to `default.wav`/`default.mp3` with the exact reference clip transcript.
+
+Image upload notes:
+- `VISION_MODEL=` means reuse `MODEL_NAME` for image understanding.
+- The current FredRezones Qwen model reports Ollama `vision` capability.
+- If you switch to a text-only chat model, set `VISION_MODEL` to a pulled vision model.
+
+Image generation notes:
+- Start ComfyUI on `http://127.0.0.1:8188`.
+- Default checkpoint name: `flux1-schnell-fp8.safetensors`.
+- Default generation: `768x512`, `4` steps, CFG `1.0`.
+- Uploaded chat images are sent to ComfyUI as img2img references for image generation.
+- Tune reference strength with `IMAGE_GEN_REFERENCE_DENOISE`; lower preserves the upload more.
+- Suggested RTX 4070 ComfyUI args:
+  `python main.py --listen 127.0.0.1 --port 8188 --disable-auto-launch --disable-dynamic-vram --lowvram --fp8_e4m3fn-unet --fp8_e4m3fn-text-enc --reserve-vram 1`
+- Add `--use-sage-attention` if your ComfyUI install supports it.

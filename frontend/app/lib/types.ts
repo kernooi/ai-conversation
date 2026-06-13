@@ -5,6 +5,13 @@ export interface Message {
   role: Role;
   content: string;
   timestamp: number;
+  images?: ImageAttachment[];
+}
+
+export interface ImageAttachment {
+  id: string;
+  name: string;
+  url: string;
 }
 
 export interface Session {
@@ -16,6 +23,7 @@ export interface Session {
 export interface ChatRequest {
   message: string;
   session_id: string;
+  image_context?: string;
 }
 
 export interface ChatResponse {

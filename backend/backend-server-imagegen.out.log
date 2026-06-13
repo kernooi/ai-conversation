@@ -1,0 +1,15 @@
+[warm-up] preloading: LLM...
+[warm-up] preloading: TTS...
+[tts] loading CosyVoice3 from D:\ai-conversation-models\Fun-CosyVoice3-0.5B
+Downloading Model to directory: C:\Users\User\.cache\modelscope\hub\pengzhendong/wetext
+Downloading Model to directory: C:\Users\User\.cache\modelscope\hub\pengzhendong/wetext
+[tts] cached CosyVoice3 speaker voice=default elapsed=2.85s
+[tts] cosyvoice3 synth elapsed=5.57s chars=3 voice=default mode=zero_shot
+[warm-up] preloading: STT...
+[stt] loading Whisper 'base' on cpu (int8)
+[warm-up] done
+INFO:     127.0.0.1:54035 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54034 - "GET /image/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58757 - "POST /image/generate HTTP/1.1" 412 Precondition Failed
+INFO:     127.0.0.1:61198 - "GET /image/status HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61778 - "GET /image/status HTTP/1.1" 200 OK

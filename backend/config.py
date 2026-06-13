@@ -17,6 +17,26 @@ class Settings(BaseSettings):
     warm_up_stt: bool = True       # preload Whisper at startup
     warm_up_tts: bool = True       # preload CosyVoice3 at startup
 
+    # Image understanding (Ollama vision model)
+    vision_model: str = ""
+    vision_keep_alive: str = "10m"
+    vision_num_ctx: int = 4096
+    vision_num_predict: int = 700
+    vision_max_image_mb: int = 8
+
+    # Image generation (ComfyUI + Flux Schnell)
+    comfyui_url: str = "http://127.0.0.1:8188"
+    comfyui_checkpoint: str = "flux1-schnell-fp8.safetensors"
+    comfyui_workflow_path: str = ""
+    image_gen_width: int = 768
+    image_gen_height: int = 512
+    image_gen_steps: int = 4
+    image_gen_cfg: float = 1.0
+    image_gen_sampler: str = "euler"
+    image_gen_scheduler: str = "simple"
+    image_gen_timeout: int = 300
+    image_gen_reference_denoise: float = 0.82
+
     # Speech-to-text (faster-whisper)
     whisper_model: str = "base"            # tiny / base / small / medium / large-v3
     whisper_device: str = "auto"           # auto / cuda / cpu  (auto picks GPU if present)

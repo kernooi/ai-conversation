@@ -1,0 +1,42 @@
+[warm-up] preloading: LLM...
+[warm-up] preloading: TTS...
+[tts] loading CosyVoice3 from D:\ai-conversation-models\Fun-CosyVoice3-0.5B
+Downloading Model to directory: C:\Users\User\.cache\modelscope\hub\pengzhendong/wetext
+Downloading Model to directory: C:\Users\User\.cache\modelscope\hub\pengzhendong/wetext
+[tts] cached CosyVoice3 speaker voice=default elapsed=2.88s
+[tts] cosyvoice3 synth elapsed=5.08s chars=3 voice=default mode=zero_shot
+[warm-up] preloading: STT...
+[stt] loading Whisper 'base' on cpu (int8)
+[warm-up] done
+INFO:     127.0.0.1:55458 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55485 - "POST /vision/analyze HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50145 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55381 - "GET /voices HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51296 - "POST /vision/analyze HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51296 - "OPTIONS /chat/stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51296 - "POST /chat/stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60580 - "OPTIONS /tts HTTP/1.1" 200 OK
+[ollama] stream elapsed=3.36s first_content=0.77s content_chars=112 hidden_thinking_chars=0 eval_tokens=78 eval_tok_s=29.9 prompt_tokens=1021 prompt_tok_s=2572.0
+[tts] cosyvoice3 synth elapsed=13.43s chars=66 voice=default mode=zero_shot
+INFO:     127.0.0.1:60580 - "POST /tts HTTP/1.1" 200 OK
+[tts] cosyvoice3 synth elapsed=20.12s chars=47 voice=default mode=zero_shot
+INFO:     127.0.0.1:51296 - "POST /tts HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60580 - "POST /chat/stream HTTP/1.1" 200 OK
+[ollama] stream elapsed=2.18s first_content=0.94s content_chars=96 hidden_thinking_chars=0 eval_tokens=74 eval_tok_s=59.8 prompt_tokens=1114 prompt_tok_s=2820.5
+[tts] cosyvoice3 synth elapsed=18.59s chars=96 voice=default mode=zero_shot
+INFO:     127.0.0.1:52899 - "POST /tts HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58320 - "POST /chat/stream HTTP/1.1" 200 OK
+[ollama] stream elapsed=3.38s first_content=1.07s content_chars=87 hidden_thinking_chars=0 eval_tokens=66 eval_tok_s=28.6 prompt_tokens=1200 prompt_tok_s=2408.7
+[tts] cosyvoice3 synth elapsed=15.73s chars=82 voice=default mode=zero_shot
+INFO:     127.0.0.1:59523 - "POST /tts HTTP/1.1" 200 OK
+[tts] cosyvoice3 synth elapsed=16.28s chars=6 voice=default mode=zero_shot
+INFO:     127.0.0.1:58320 - "POST /tts HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62018 - "POST /vision/analyze HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62018 - "POST /chat/stream HTTP/1.1" 200 OK
+[ollama] stream elapsed=2.93s first_content=0.60s content_chars=120 hidden_thinking_chars=0 eval_tokens=86 eval_tok_s=37.0 prompt_tokens=1695 prompt_tok_s=6799.7
+[tts] cosyvoice3 synth elapsed=21.37s chars=116 voice=default mode=zero_shot
+INFO:     127.0.0.1:54599 - "POST /tts HTTP/1.1" 200 OK
+[tts] cosyvoice3 synth elapsed=22.38s chars=5 voice=default mode=zero_shot
+INFO:     127.0.0.1:62018 - "POST /tts HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53518 - "OPTIONS /session/4c16873d-ebc7-477e-b9a8-0b3d1ec8bf11 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53518 - "DELETE /session/4c16873d-ebc7-477e-b9a8-0b3d1ec8bf11 HTTP/1.1" 200 OK

@@ -1,0 +1,58 @@
+INFO:     Started server process [23304]
+INFO:     Waiting for application startup.
+Sliding Window Attention is enabled but not implemented for `sdpa`; unexpected results may be encountered.
+2026-06-13 17:09:53,349 INFO input frame rate=25
+C:\Users\User\OneDrive\Desktop\ai-conversation\backend\venv\Lib\site-packages\torch\nn\utils\weight_norm.py:143: FutureWarning: `torch.nn.utils.weight_norm` is deprecated in favor of `torch.nn.utils.parametrizations.weight_norm`.
+  WeightNorm.apply(module, name, dim)
+C:\Users\User\OneDrive\Desktop\ai-conversation\backend\venv\Lib\site-packages\onnxruntime\capi\onnxruntime_inference_collection.py:69: UserWarning: Specified provider 'CUDAExecutionProvider' is not in available provider names.Available providers: 'AzureExecutionProvider, CPUExecutionProvider'
+  warnings.warn(
+2026-06-13 17:10:03,209 DEBUG Starting new HTTPS connection (1): www.modelscope.cn:443
+2026-06-13 17:10:05,437 DEBUG https://www.modelscope.cn:443 "GET /api/v1/models/pengzhendong/wetext/revisions HTTP/1.1" 200 222
+2026-06-13 17:10:05,904 DEBUG https://www.modelscope.cn:443 "GET /api/v1/models/pengzhendong/wetext/repo/files?Revision=master&Recursive=True HTTP/1.1" 200 None
+2026-06-13 17:10:06,604 DEBUG Starting new HTTPS connection (1): www.modelscope.cn:443
+2026-06-13 17:10:08,151 DEBUG https://www.modelscope.cn:443 "GET /api/v1/models/pengzhendong/wetext/revisions HTTP/1.1" 200 222
+2026-06-13 17:10:08,619 DEBUG https://www.modelscope.cn:443 "GET /api/v1/models/pengzhendong/wetext/repo/files?Revision=master&Recursive=True HTTP/1.1" 200 None
+2026-06-13 17:10:09,304 INFO use wetext frontend
+  0%|          | 0/1 [00:00<?, ?it/s]2026-06-13 17:10:14,775 WARNING synthesis text \u4f60\u597d\u3002 too short than prompt text You are a helpful assistant.<|endofprompt|>\u65e9\u5b89\u73fe\u5728\u6211\u5df2\u7d93\u5728\u5531\u904e\u4e86\u4eca\u5929\u662f\u6211\u5011\u7684\u7b2c\u4e00\u5929\u6211\u6703\u5728\u9019\u88e1\u4e94\u5929HELLY\u5feb\u7136\u5f8c\u6240\u4ee5\u6211\u5011\u4eca\u5929\u6709\u5f88\u591a\u5f88\u591a\u5f88XIDING\u7684XTPD\u6211\u5011\u5df2\u7d93 plan\u597d\u4e86\u9019\u6211\u5df2\u7d93\u7a7f\u597d\u6700\u559c\u6b61\u7684Picky NEO\u6e96\u5099\u597d\u592a\u7167Picky\u5c31\u5728\u5916\u9762\u9019\u88e1\u5feb\u4e00\u9ede\u88dd\u56e0\u70ba\u5916\u9762\u9019\u88e1\u7684\u967d\u5149\u592a\u597d\u770b\u4e86\u591a\u6eab\u958b\u7bb1, this may lead to bad performance
+2026-06-13 17:10:14,776 INFO synthesis text \u4f60\u597d\u3002
+C:\Users\User\OneDrive\Desktop\ai-conversation\backend\vendor\CosyVoice\cosyvoice\cli\model.py:103: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  with self.llm_context, torch.cuda.amp.autocast(self.fp16 is True and hasattr(self.llm, 'vllm') is False):
+C:\Users\User\OneDrive\Desktop\ai-conversation\backend\vendor\CosyVoice\cosyvoice\cli\model.py:426: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  with torch.cuda.amp.autocast(self.fp16):
+2026-06-13 17:10:17,678 INFO yield speech len 1.16, rtf 2.502416536725801
+100%|##########| 1/1 [00:02<00:00,  2.93s/it]100%|##########| 1/1 [00:02<00:00,  2.93s/it]
+2026-06-13 17:10:17,794 DEBUG Starting new HTTPS connection (1): huggingface.co:443
+2026-06-13 17:10:18,350 DEBUG https://huggingface.co:443 "GET /api/models/Systran/faster-whisper-base/revision/main HTTP/1.1" 200 None
+2026-06-13 17:10:18,691 INFO Processing audio with duration 00:01.000
+2026-06-13 17:10:19,262 INFO Detected language 'en' with probability 0.51
+2026-06-13 17:10:19,263 DEBUG Processing segment at 00:00.000
+2026-06-13 17:10:19,815 DEBUG Log probability threshold is not met with temperature 0.0 (-1.350625 < -1.000000)
+2026-06-13 17:10:19,816 DEBUG No speech threshold is met (0.654015 > 0.600000)
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
+2026-06-13 17:11:44,200 DEBUG close.started
+2026-06-13 17:11:44,224 DEBUG close.complete
+2026-06-13 17:11:44,225 DEBUG connect_tcp.started host='localhost' port=11434 local_address=None timeout=5.0 socket_options=None
+2026-06-13 17:11:44,486 DEBUG connect_tcp.complete return_value=<httpcore._backends.anyio.AnyIOStream object at 0x00000258543659D0>
+2026-06-13 17:11:44,511 DEBUG send_request_headers.started request=<Request [b'GET']>
+2026-06-13 17:11:44,512 DEBUG send_request_headers.complete
+2026-06-13 17:11:44,512 DEBUG send_request_body.started request=<Request [b'GET']>
+2026-06-13 17:11:44,512 DEBUG send_request_body.complete
+2026-06-13 17:11:44,512 DEBUG receive_response_headers.started request=<Request [b'GET']>
+2026-06-13 17:11:44,513 DEBUG receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'application/json; charset=utf-8'), (b'Date', b'Sat, 13 Jun 2026 09:11:44 GMT'), (b'Content-Length', b'1227')])
+2026-06-13 17:11:44,513 INFO HTTP Request: GET http://localhost:11434/api/tags "HTTP/1.1 200 OK"
+2026-06-13 17:11:44,513 DEBUG receive_response_body.started request=<Request [b'GET']>
+2026-06-13 17:11:44,513 DEBUG receive_response_body.complete
+2026-06-13 17:11:44,514 DEBUG response_closed.started
+2026-06-13 17:11:44,514 DEBUG response_closed.complete
+2026-06-13 17:11:44,517 DEBUG send_request_headers.started request=<Request [b'GET']>
+2026-06-13 17:11:44,518 DEBUG send_request_headers.complete
+2026-06-13 17:11:44,518 DEBUG send_request_body.started request=<Request [b'GET']>
+2026-06-13 17:11:44,518 DEBUG send_request_body.complete
+2026-06-13 17:11:44,518 DEBUG receive_response_headers.started request=<Request [b'GET']>
+2026-06-13 17:11:44,519 DEBUG receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'application/json; charset=utf-8'), (b'Date', b'Sat, 13 Jun 2026 09:11:44 GMT'), (b'Content-Length', b'473')])
+2026-06-13 17:11:44,519 INFO HTTP Request: GET http://localhost:11434/api/ps "HTTP/1.1 200 OK"
+2026-06-13 17:11:44,519 DEBUG receive_response_body.started request=<Request [b'GET']>
+2026-06-13 17:11:44,519 DEBUG receive_response_body.complete
+2026-06-13 17:11:44,519 DEBUG response_closed.started
+2026-06-13 17:11:44,519 DEBUG response_closed.complete
