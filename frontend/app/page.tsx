@@ -13,9 +13,19 @@ import VoiceControls from "@/app/components/VoiceControls";
 const SESSION_ID = uuidv4();
 
 // Sentence terminators (Latin + CJK). Short fragments are held back so we don't
-// split on "3.14" or "Mr." — the leftover is flushed when the stream ends.
-const SENTENCE_END = /[.!?。！？\n]/;
+// split on "3.14" or "Mr."; the leftover is flushed when the stream ends.
+const SENTENCE_END = /[.!?\u3002\uff01\uff1f\n]/;
 const MIN_SENTENCE_LEN = 12;
+const TTS_BATCH_MIN_CHARS = 90;
+const TTS_BATCH_MAX_SENTENCES = 2;
+
+function joinSpeechParts(parts: string[]): string {
+  return parts
+    .join(" ")
+    .replace(/\s+([,.!?;:\u3002\uff01\uff1f\uff0c\uff1b\uff1a])/g, "$1")
+    .replace(/\s+/g, " ")
+    .trim();
+}
 
 function extractSentences(buffer: string): { sentences: string[]; rest: string } {
   const sentences: string[] = [];
@@ -74,6 +84,26 @@ export default function Home() {
       setError(null);
 
       let ttsBuffer = "";
+      let speechBatch: string[] = [];
+      const flushSpeechBatch = () => {
+        if (!speechBatch.length) return;
+        speech.enqueue(joinSpeechParts(speechBatch));
+        speechBatch = [];
+      };
+      const enqueueSpeechSentences = (sentences: string[]) => {
+        for (const sentence of sentences) {
+          speechBatch.push(sentence);
+          const batchText = joinSpeechParts(speechBatch);
+          if (
+            speechBatch.length >= TTS_BATCH_MAX_SENTENCES ||
+            batchText.length >= TTS_BATCH_MIN_CHARS
+          ) {
+            speech.enqueue(batchText);
+            speechBatch = [];
+          }
+        }
+      };
+
       try {
         for await (const chunk of streamMessage({ message: text, session_id: SESSION_ID })) {
           setMessages((prev) =>
@@ -85,7 +115,7 @@ export default function Home() {
             ttsBuffer += chunk;
             const { sentences, rest } = extractSentences(ttsBuffer);
             ttsBuffer = rest;
-            for (const s of sentences) speech.enqueue(s);
+            enqueueSpeechSentences(sentences);
           }
         }
       } catch (err) {
@@ -97,7 +127,10 @@ export default function Home() {
       }
 
       // Flush any trailing text that never hit a sentence boundary
-      if (voiceOn && ttsBuffer.trim()) speech.enqueue(ttsBuffer);
+      if (voiceOn) {
+        if (ttsBuffer.trim()) speechBatch.push(ttsBuffer.trim());
+        flushSpeechBatch();
+      }
 
       setIsLoading(false);
     },

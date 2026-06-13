@@ -191,8 +191,12 @@ be manually corrected against the reference clip.
 
 Performance:
 - First TTS call can take around 50 seconds because CosyVoice3 loads the model.
-- After load, test synthesis completed in about 8 seconds for a tiny Chinese
-  phrase on this machine.
+- After load, repeated HTTP `/tts` tests completed in about 3-5 seconds for
+  short Chinese phrases on this machine.
+- `tts.py` caches CosyVoice3 zero-shot speaker features with
+  `model.add_zero_shot_spk(...)` and reuses the resulting `zero_shot_spk_id` for
+  later requests. If logs show `[tts] cached CosyVoice3 speaker ...` for every
+  line, the backend is restarting or the voice file/transcript changed.
 - `tts.py` uses a synthesis lock so overlapping sentence-level TTS requests do
   not fight over the same GPU.
 - `WARM_UP_TTS=true` loads CosyVoice3 during backend startup if dependencies are
@@ -205,9 +209,11 @@ Known warning:
 
 ## Frontend Voice Flow
 
-`frontend/app/lib/useSpeechQueue.ts` speaks assistant replies sentence by
-sentence. It starts TTS for each completed sentence immediately while preserving
-playback order, so the first audio does not wait for the full LLM reply.
+`frontend/app/page.tsx` batches speech chunks before calling `/tts`: up to two
+sentences or around 90 characters per request. This avoids paying CosyVoice3
+overhead for every tiny sentence. `frontend/app/lib/useSpeechQueue.ts` still
+starts each queued chunk immediately while preserving playback order, so the
+next chunk can synthesize while the current chunk plays.
 
 `ApiError` in `frontend/app/lib/api.ts` preserves `/tts` HTTP status codes. A
 412 from `/tts` disables speech for that turn and shows one useful error instead

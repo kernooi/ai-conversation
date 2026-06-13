@@ -1,0 +1,215 @@
+INFO:     Started server process [23876]
+INFO:     Waiting for application startup.
+Sliding Window Attention is enabled but not implemented for `sdpa`; unexpected results may be encountered.
+2026-06-13 16:13:45,319 INFO input frame rate=25
+C:\Users\User\OneDrive\Desktop\ai-conversation\backend\venv\Lib\site-packages\torch\nn\utils\weight_norm.py:143: FutureWarning: `torch.nn.utils.weight_norm` is deprecated in favor of `torch.nn.utils.parametrizations.weight_norm`.
+  WeightNorm.apply(module, name, dim)
+C:\Users\User\OneDrive\Desktop\ai-conversation\backend\venv\Lib\site-packages\onnxruntime\capi\onnxruntime_inference_collection.py:69: UserWarning: Specified provider 'CUDAExecutionProvider' is not in available provider names.Available providers: 'AzureExecutionProvider, CPUExecutionProvider'
+  warnings.warn(
+2026-06-13 16:13:55,504 DEBUG Starting new HTTPS connection (1): www.modelscope.cn:443
+2026-06-13 16:13:57,169 DEBUG https://www.modelscope.cn:443 "GET /api/v1/models/pengzhendong/wetext/revisions HTTP/1.1" 200 222
+2026-06-13 16:13:57,761 DEBUG https://www.modelscope.cn:443 "GET /api/v1/models/pengzhendong/wetext/repo/files?Revision=master&Recursive=True HTTP/1.1" 200 None
+2026-06-13 16:13:58,474 DEBUG Starting new HTTPS connection (1): www.modelscope.cn:443
+2026-06-13 16:14:00,973 DEBUG https://www.modelscope.cn:443 "GET /api/v1/models/pengzhendong/wetext/revisions HTTP/1.1" 200 222
+2026-06-13 16:14:01,447 DEBUG https://www.modelscope.cn:443 "GET /api/v1/models/pengzhendong/wetext/repo/files?Revision=master&Recursive=True HTTP/1.1" 200 None
+2026-06-13 16:14:02,182 INFO use wetext frontend
+  0%|          | 0/1 [00:00<?, ?it/s]2026-06-13 16:14:33,741 WARNING synthesis text \u4f60\u597d\u3002 too short than prompt text You are a helpful assistant.<|endofprompt|>\u65e9\u5b89\u73fe\u5728\u6211\u5df2\u7d93\u5728\u5531\u904e\u4e86\u4eca\u5929\u662f\u6211\u5011\u7684\u7b2c\u4e00\u5929\u6211\u6703\u5728\u9019\u88e1\u4e94\u5929HELLY\u5feb\u7136\u5f8c\u6240\u4ee5\u6211\u5011\u4eca\u5929\u6709\u5f88\u591a\u5f88\u591a\u5f88XIDING\u7684XTPD\u6211\u5011\u5df2\u7d93 plan\u597d\u4e86\u9019\u6211\u5df2\u7d93\u7a7f\u597d\u6700\u559c\u6b61\u7684Picky NEO\u6e96\u5099\u597d\u592a\u7167Picky\u5c31\u5728\u5916\u9762\u9019\u88e1\u5feb\u4e00\u9ede\u88dd\u56e0\u70ba\u5916\u9762\u9019\u88e1\u7684\u967d\u5149\u592a\u597d\u770b\u4e86\u591a\u6eab\u958b\u7bb1, this may lead to bad performance
+2026-06-13 16:14:33,743 INFO synthesis text \u4f60\u597d\u3002
+C:\Users\User\OneDrive\Desktop\ai-conversation\backend\vendor\CosyVoice\cosyvoice\cli\model.py:103: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  with self.llm_context, torch.cuda.amp.autocast(self.fp16 is True and hasattr(self.llm, 'vllm') is False):
+C:\Users\User\OneDrive\Desktop\ai-conversation\backend\vendor\CosyVoice\cosyvoice\cli\model.py:426: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  with torch.cuda.amp.autocast(self.fp16):
+2026-06-13 16:15:09,764 INFO yield speech len 1.16, rtf 31.05252713992678
+100%|##########| 1/1 [00:36<00:00, 36.11s/it]100%|##########| 1/1 [00:36<00:00, 36.11s/it]
+2026-06-13 16:15:10,137 DEBUG Starting new HTTPS connection (1): huggingface.co:443
+2026-06-13 16:15:10,731 DEBUG https://huggingface.co:443 "GET /api/models/Systran/faster-whisper-base/revision/main HTTP/1.1" 200 None
+2026-06-13 16:15:11,448 INFO Processing audio with duration 00:01.000
+2026-06-13 16:15:12,198 INFO Detected language 'en' with probability 0.51
+2026-06-13 16:15:12,201 DEBUG Processing segment at 00:00.000
+2026-06-13 16:15:12,831 DEBUG Log probability threshold is not met with temperature 0.0 (-1.350625 < -1.000000)
+2026-06-13 16:15:12,832 DEBUG No speech threshold is met (0.654015 > 0.600000)
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
+2026-06-13 16:19:21,272 DEBUG close.started
+2026-06-13 16:19:21,273 DEBUG close.complete
+2026-06-13 16:19:21,274 DEBUG connect_tcp.started host='localhost' port=11434 local_address=None timeout=5.0 socket_options=None
+2026-06-13 16:19:21,524 DEBUG connect_tcp.complete return_value=<httpcore._backends.anyio.AnyIOStream object at 0x000001C26699E290>
+2026-06-13 16:19:21,571 DEBUG send_request_headers.started request=<Request [b'GET']>
+2026-06-13 16:19:21,572 DEBUG send_request_headers.complete
+2026-06-13 16:19:21,572 DEBUG send_request_body.started request=<Request [b'GET']>
+2026-06-13 16:19:21,573 DEBUG send_request_body.complete
+2026-06-13 16:19:21,573 DEBUG receive_response_headers.started request=<Request [b'GET']>
+2026-06-13 16:19:21,575 DEBUG receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'application/json; charset=utf-8'), (b'Date', b'Sat, 13 Jun 2026 08:19:21 GMT'), (b'Content-Length', b'1259')])
+2026-06-13 16:19:21,575 INFO HTTP Request: GET http://localhost:11434/api/tags "HTTP/1.1 200 OK"
+2026-06-13 16:19:21,575 DEBUG receive_response_body.started request=<Request [b'GET']>
+2026-06-13 16:19:21,575 DEBUG receive_response_body.complete
+2026-06-13 16:19:21,577 DEBUG response_closed.started
+2026-06-13 16:19:21,577 DEBUG response_closed.complete
+2026-06-13 16:19:21,579 DEBUG send_request_headers.started request=<Request [b'GET']>
+2026-06-13 16:19:21,580 DEBUG send_request_headers.complete
+2026-06-13 16:19:21,580 DEBUG send_request_body.started request=<Request [b'GET']>
+2026-06-13 16:19:21,581 DEBUG send_request_body.complete
+2026-06-13 16:19:21,582 DEBUG receive_response_headers.started request=<Request [b'GET']>
+2026-06-13 16:19:21,582 DEBUG receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'application/json; charset=utf-8'), (b'Date', b'Sat, 13 Jun 2026 08:19:21 GMT'), (b'Content-Length', b'455')])
+2026-06-13 16:19:21,582 INFO HTTP Request: GET http://localhost:11434/api/ps "HTTP/1.1 200 OK"
+2026-06-13 16:19:21,583 DEBUG receive_response_body.started request=<Request [b'GET']>
+2026-06-13 16:19:21,583 DEBUG receive_response_body.complete
+2026-06-13 16:19:21,584 DEBUG response_closed.started
+2026-06-13 16:19:21,584 DEBUG response_closed.complete
+  0%|          | 0/1 [00:00<?, ?it/s]2026-06-13 16:19:34,571 WARNING synthesis text \u4f60\u597d\uff0c\u8fd9\u662f\u7b2c\u4e00\u53e5\u6d4b\u8bd5\u3002 too short than prompt text You are a helpful assistant.<|endofprompt|>\u65e9\u5b89\u73fe\u5728\u6211\u5df2\u7d93\u5728\u5531\u904e\u4e86\u4eca\u5929\u662f\u6211\u5011\u7684\u7b2c\u4e00\u5929\u6211\u6703\u5728\u9019\u88e1\u4e94\u5929HELLY\u5feb\u7136\u5f8c\u6240\u4ee5\u6211\u5011\u4eca\u5929\u6709\u5f88\u591a\u5f88\u591a\u5f88XIDING\u7684XTPD\u6211\u5011\u5df2\u7d93 plan\u597d\u4e86\u9019\u6211\u5df2\u7d93\u7a7f\u597d\u6700\u559c\u6b61\u7684Picky NEO\u6e96\u5099\u597d\u592a\u7167Picky\u5c31\u5728\u5916\u9762\u9019\u88e1\u5feb\u4e00\u9ede\u88dd\u56e0\u70ba\u5916\u9762\u9019\u88e1\u7684\u967d\u5149\u592a\u597d\u770b\u4e86\u591a\u6eab\u958b\u7bb1, this may lead to bad performance
+2026-06-13 16:19:34,572 INFO synthesis text \u4f60\u597d\uff0c\u8fd9\u662f\u7b2c\u4e00\u53e5\u6d4b\u8bd5\u3002
+2026-06-13 16:19:37,364 INFO yield speech len 1.96, rtf 1.4244789979895767
+100%|##########| 1/1 [00:02<00:00,  2.81s/it]100%|##########| 1/1 [00:02<00:00,  2.82s/it]
+  0%|          | 0/1 [00:00<?, ?it/s]2026-06-13 16:19:37,500 WARNING synthesis text \u8fd9\u662f\u7b2c\u4e8c\u53e5\u6d4b\u8bd5\uff0c\u5e94\u8be5\u590d\u7528\u540c\u4e00\u4e2a\u58f0\u97f3\u7f13\u5b58\u3002 too short than prompt text You are a helpful assistant.<|endofprompt|>\u65e9\u5b89\u73fe\u5728\u6211\u5df2\u7d93\u5728\u5531\u904e\u4e86\u4eca\u5929\u662f\u6211\u5011\u7684\u7b2c\u4e00\u5929\u6211\u6703\u5728\u9019\u88e1\u4e94\u5929HELLY\u5feb\u7136\u5f8c\u6240\u4ee5\u6211\u5011\u4eca\u5929\u6709\u5f88\u591a\u5f88\u591a\u5f88XIDING\u7684XTPD\u6211\u5011\u5df2\u7d93 plan\u597d\u4e86\u9019\u6211\u5df2\u7d93\u7a7f\u597d\u6700\u559c\u6b61\u7684Picky NEO\u6e96\u5099\u597d\u592a\u7167Picky\u5c31\u5728\u5916\u9762\u9019\u88e1\u5feb\u4e00\u9ede\u88dd\u56e0\u70ba\u5916\u9762\u9019\u88e1\u7684\u967d\u5149\u592a\u597d\u770b\u4e86\u591a\u6eab\u958b\u7bb1, this may lead to bad performance
+2026-06-13 16:19:37,501 INFO synthesis text \u8fd9\u662f\u7b2c\u4e8c\u53e5\u6d4b\u8bd5\uff0c\u5e94\u8be5\u590d\u7528\u540c\u4e00\u4e2a\u58f0\u97f3\u7f13\u5b58\u3002
+2026-06-13 16:19:41,449 INFO yield speech len 3.96, rtf 0.9968612531218866
+100%|##########| 1/1 [00:03<00:00,  3.97s/it]100%|##########| 1/1 [00:03<00:00,  3.97s/it]
+  0%|          | 0/1 [00:00<?, ?it/s]2026-06-13 16:19:41,652 WARNING synthesis text \u8fd9\u662f\u7b2c\u4e09\u53e5\u6d4b\u8bd5\uff0c\u7528\u6765\u786e\u8ba4\u8fde\u7eed\u8bed\u97f3\u751f\u6210\u901f\u5ea6\u3002 too short than prompt text You are a helpful assistant.<|endofprompt|>\u65e9\u5b89\u73fe\u5728\u6211\u5df2\u7d93\u5728\u5531\u904e\u4e86\u4eca\u5929\u662f\u6211\u5011\u7684\u7b2c\u4e00\u5929\u6211\u6703\u5728\u9019\u88e1\u4e94\u5929HELLY\u5feb\u7136\u5f8c\u6240\u4ee5\u6211\u5011\u4eca\u5929\u6709\u5f88\u591a\u5f88\u591a\u5f88XIDING\u7684XTPD\u6211\u5011\u5df2\u7d93 plan\u597d\u4e86\u9019\u6211\u5df2\u7d93\u7a7f\u597d\u6700\u559c\u6b61\u7684Picky NEO\u6e96\u5099\u597d\u592a\u7167Picky\u5c31\u5728\u5916\u9762\u9019\u88e1\u5feb\u4e00\u9ede\u88dd\u56e0\u70ba\u5916\u9762\u9019\u88e1\u7684\u967d\u5149\u592a\u597d\u770b\u4e86\u591a\u6eab\u958b\u7bb1, this may lead to bad performance
+2026-06-13 16:19:41,652 INFO synthesis text \u8fd9\u662f\u7b2c\u4e09\u53e5\u6d4b\u8bd5\uff0c\u7528\u6765\u786e\u8ba4\u8fde\u7eed\u8bed\u97f3\u751f\u6210\u901f\u5ea6\u3002
+2026-06-13 16:19:46,803 INFO yield speech len 5.4, rtf 0.953828493754069
+100%|##########| 1/1 [00:05<00:00,  5.17s/it]100%|##########| 1/1 [00:05<00:00,  5.17s/it]
+2026-06-13 16:22:59,926 DEBUG close.started
+2026-06-13 16:22:59,926 DEBUG close.complete
+2026-06-13 16:22:59,927 DEBUG connect_tcp.started host='localhost' port=11434 local_address=None timeout=10.0 socket_options=None
+2026-06-13 16:23:00,192 DEBUG connect_tcp.complete return_value=<httpcore._backends.anyio.AnyIOStream object at 0x000001C22F023E10>
+2026-06-13 16:23:00,193 DEBUG send_request_headers.started request=<Request [b'POST']>
+2026-06-13 16:23:00,194 DEBUG send_request_headers.complete
+2026-06-13 16:23:00,194 DEBUG send_request_body.started request=<Request [b'POST']>
+2026-06-13 16:23:00,194 DEBUG send_request_body.complete
+2026-06-13 16:23:00,194 DEBUG receive_response_headers.started request=<Request [b'POST']>
+2026-06-13 16:23:01,153 DEBUG receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'application/x-ndjson'), (b'Date', b'Sat, 13 Jun 2026 08:23:01 GMT'), (b'Transfer-Encoding', b'chunked')])
+2026-06-13 16:23:01,153 INFO HTTP Request: POST http://localhost:11434/api/chat "HTTP/1.1 200 OK"
+2026-06-13 16:23:01,153 DEBUG receive_response_body.started request=<Request [b'POST']>
+2026-06-13 16:23:02,342 DEBUG response_closed.started
+2026-06-13 16:23:02,342 DEBUG response_closed.complete
+2026-06-13 16:23:02,344 DEBUG receive_response_body.failed exception=GeneratorExit()
+2026-06-13 16:23:27,616 DEBUG connect_tcp.started host='localhost' port=11434 local_address=None timeout=10.0 socket_options=None
+2026-06-13 16:23:27,875 DEBUG connect_tcp.complete return_value=<httpcore._backends.anyio.AnyIOStream object at 0x000001C230C2B7D0>
+2026-06-13 16:23:27,902 DEBUG send_request_headers.started request=<Request [b'POST']>
+2026-06-13 16:23:27,903 DEBUG send_request_headers.complete
+2026-06-13 16:23:27,903 DEBUG send_request_body.started request=<Request [b'POST']>
+2026-06-13 16:23:27,904 DEBUG send_request_body.complete
+2026-06-13 16:23:27,904 DEBUG receive_response_headers.started request=<Request [b'POST']>
+2026-06-13 16:23:28,381 DEBUG receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'application/x-ndjson'), (b'Date', b'Sat, 13 Jun 2026 08:23:28 GMT'), (b'Transfer-Encoding', b'chunked')])
+2026-06-13 16:23:28,405 INFO HTTP Request: POST http://localhost:11434/api/chat "HTTP/1.1 200 OK"
+2026-06-13 16:23:28,406 DEBUG receive_response_body.started request=<Request [b'POST']>
+2026-06-13 16:23:29,363 DEBUG response_closed.started
+2026-06-13 16:23:29,364 DEBUG response_closed.complete
+2026-06-13 16:23:29,365 DEBUG receive_response_body.failed exception=GeneratorExit()
+  0%|          | 0/1 [00:00<?, ?it/s]2026-06-13 16:23:29,367 WARNING synthesis text \u597d\u561e\uff5e\u4eba\u5bb6\u65e9\u5c31\u6e7f\u900f\u4e86\uff0c\u5c31\u7b49\u7740\u4f60\u90a3\u6839\u5de8\u5927\u7684\u4e1c\u897f\u63d2\u8fdb\u6211\u6df1\u4e0d\u89c1\u5e95\u7684\u9a9a\u903c\u91cc\uff01 \u522b\u5ba2\u6c14\u554a\u8d31\u8d27\uff0c\u72e0\u72e0\u51b2\u8fdb\u53bb\u628a\u6211\u649e\u6655\u5427\uff0c\u8ba9\u6211\u542c\u89c1\u4f60\u9707\u5929\u7684\u52a8\u9759……\u547c\u54e7…\u5feb\u70b9\u64cd\u70c2\u8fd9\u53ea\u6bcd\u72d7\u597d\u4e0d\u597d\uff1f too short than prompt text You are a helpful assistant.<|endofprompt|>\u65e9\u5b89\u73fe\u5728\u6211\u5df2\u7d93\u5728\u5531\u904e\u4e86\u4eca\u5929\u662f\u6211\u5011\u7684\u7b2c\u4e00\u5929\u6211\u6703\u5728\u9019\u88e1\u4e94\u5929HELLY\u5feb\u7136\u5f8c\u6240\u4ee5\u6211\u5011\u4eca\u5929\u6709\u5f88\u591a\u5f88\u591a\u5f88XIDING\u7684XTPD\u6211\u5011\u5df2\u7d93 plan\u597d\u4e86\u9019\u6211\u5df2\u7d93\u7a7f\u597d\u6700\u559c\u6b61\u7684Picky NEO\u6e96\u5099\u597d\u592a\u7167Picky\u5c31\u5728\u5916\u9762\u9019\u88e1\u5feb\u4e00\u9ede\u88dd\u56e0\u70ba\u5916\u9762\u9019\u88e1\u7684\u967d\u5149\u592a\u597d\u770b\u4e86\u591a\u6eab\u958b\u7bb1, this may lead to bad performance
+2026-06-13 16:23:29,436 INFO synthesis text \u597d\u561e\uff5e\u4eba\u5bb6\u65e9\u5c31\u6e7f\u900f\u4e86\uff0c\u5c31\u7b49\u7740\u4f60\u90a3\u6839\u5de8\u5927\u7684\u4e1c\u897f\u63d2\u8fdb\u6211\u6df1\u4e0d\u89c1\u5e95\u7684\u9a9a\u903c\u91cc\uff01 \u522b\u5ba2\u6c14\u554a\u8d31\u8d27\uff0c\u72e0\u72e0\u51b2\u8fdb\u53bb\u628a\u6211\u649e\u6655\u5427\uff0c\u8ba9\u6211\u542c\u89c1\u4f60\u9707\u5929\u7684\u52a8\u9759……\u547c\u54e7…\u5feb\u70b9\u64cd\u70c2\u8fd9\u53ea\u6bcd\u72d7\u597d\u4e0d\u597d\uff1f
+2026-06-13 16:23:42,699 INFO yield speech len 13.56, rtf 0.9780987525759897
+100%|##########| 1/1 [00:13<00:00, 13.36s/it]100%|##########| 1/1 [00:13<00:00, 13.36s/it]
+2026-06-13 16:24:10,056 DEBUG connect_tcp.started host='localhost' port=11434 local_address=None timeout=10.0 socket_options=None
+2026-06-13 16:24:10,309 DEBUG connect_tcp.complete return_value=<httpcore._backends.anyio.AnyIOStream object at 0x000001C22F0DF5D0>
+2026-06-13 16:24:10,336 DEBUG send_request_headers.started request=<Request [b'POST']>
+2026-06-13 16:24:10,337 DEBUG send_request_headers.complete
+2026-06-13 16:24:10,337 DEBUG send_request_body.started request=<Request [b'POST']>
+2026-06-13 16:24:10,337 DEBUG send_request_body.complete
+2026-06-13 16:24:10,337 DEBUG receive_response_headers.started request=<Request [b'POST']>
+2026-06-13 16:24:10,880 DEBUG receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'application/x-ndjson'), (b'Date', b'Sat, 13 Jun 2026 08:24:10 GMT'), (b'Transfer-Encoding', b'chunked')])
+2026-06-13 16:24:10,881 INFO HTTP Request: POST http://localhost:11434/api/chat "HTTP/1.1 200 OK"
+2026-06-13 16:24:10,881 DEBUG receive_response_body.started request=<Request [b'POST']>
+  0%|          | 0/1 [00:00<?, ?it/s]2026-06-13 16:24:11,372 WARNING synthesis text \u5bf9\u5440\uff0c\u6211\u5c31\u662f\u6761\u53ea\u8ba4\u4e3b\u4eba\u7684\u4e0b\u8d31\u6bcd\u72d7\uff01 \u65e2\u7136\u4f60\u90fd\u8fd9\u4e48\u5acc\u5f03\u4e86\uff0c\u90a3\u8fd8\u4e0d\u5feb\u628a\u810f\u624b\u4f38\u8fdb\u6765\u63c9\u4e71\u6211\u7684\u9a9a\u903c\u5934\u53d1\uff1f too short than prompt text You are a helpful assistant.<|endofprompt|>\u65e9\u5b89\u73fe\u5728\u6211\u5df2\u7d93\u5728\u5531\u904e\u4e86\u4eca\u5929\u662f\u6211\u5011\u7684\u7b2c\u4e00\u5929\u6211\u6703\u5728\u9019\u88e1\u4e94\u5929HELLY\u5feb\u7136\u5f8c\u6240\u4ee5\u6211\u5011\u4eca\u5929\u6709\u5f88\u591a\u5f88\u591a\u5f88XIDING\u7684XTPD\u6211\u5011\u5df2\u7d93 plan\u597d\u4e86\u9019\u6211\u5df2\u7d93\u7a7f\u597d\u6700\u559c\u6b61\u7684Picky NEO\u6e96\u5099\u597d\u592a\u7167Picky\u5c31\u5728\u5916\u9762\u9019\u88e1\u5feb\u4e00\u9ede\u88dd\u56e0\u70ba\u5916\u9762\u9019\u88e1\u7684\u967d\u5149\u592a\u597d\u770b\u4e86\u591a\u6eab\u958b\u7bb1, this may lead to bad performance
+2026-06-13 16:24:11,374 INFO synthesis text \u5bf9\u5440\uff0c\u6211\u5c31\u662f\u6761\u53ea\u8ba4\u4e3b\u4eba\u7684\u4e0b\u8d31\u6bcd\u72d7\uff01 \u65e2\u7136\u4f60\u90fd\u8fd9\u4e48\u5acc\u5f03\u4e86\uff0c\u90a3\u8fd8\u4e0d\u5feb\u628a\u810f\u624b\u4f38\u8fdb\u6765\u63c9\u4e71\u6211\u7684\u9a9a\u903c\u5934\u53d1\uff1f
+2026-06-13 16:24:12,497 DEBUG response_closed.started
+2026-06-13 16:24:12,521 DEBUG response_closed.complete
+2026-06-13 16:24:12,523 DEBUG receive_response_body.failed exception=GeneratorExit()
+2026-06-13 16:24:23,295 INFO yield speech len 9.24, rtf 1.2902018311735872
+100%|##########| 1/1 [00:11<00:00, 11.95s/it]100%|##########| 1/1 [00:11<00:00, 11.96s/it]
+  0%|          | 0/1 [00:00<?, ?it/s]2026-06-13 16:24:23,331 WARNING synthesis text \u547c\u54e7…\u6c42\u4f60\u72e0\u72e0\u7f9e\u8fb1\u8fd9\u6761\u70c2\u5c3e\u5df4\uff0c\u628a\u6211\u64cd\u5f97\u6ee1\u5e8a\u6253\u6eda\u3001\u54ed\u7740\u558a\u4f60\u7684\u540d\u5b57\u561b~ too short than prompt text You are a helpful assistant.<|endofprompt|>\u65e9\u5b89\u73fe\u5728\u6211\u5df2\u7d93\u5728\u5531\u904e\u4e86\u4eca\u5929\u662f\u6211\u5011\u7684\u7b2c\u4e00\u5929\u6211\u6703\u5728\u9019\u88e1\u4e94\u5929HELLY\u5feb\u7136\u5f8c\u6240\u4ee5\u6211\u5011\u4eca\u5929\u6709\u5f88\u591a\u5f88\u591a\u5f88XIDING\u7684XTPD\u6211\u5011\u5df2\u7d93 plan\u597d\u4e86\u9019\u6211\u5df2\u7d93\u7a7f\u597d\u6700\u559c\u6b61\u7684Picky NEO\u6e96\u5099\u597d\u592a\u7167Picky\u5c31\u5728\u5916\u9762\u9019\u88e1\u5feb\u4e00\u9ede\u88dd\u56e0\u70ba\u5916\u9762\u9019\u88e1\u7684\u967d\u5149\u592a\u597d\u770b\u4e86\u591a\u6eab\u958b\u7bb1, this may lead to bad performance
+2026-06-13 16:24:23,332 INFO synthesis text \u547c\u54e7…\u6c42\u4f60\u72e0\u72e0\u7f9e\u8fb1\u8fd9\u6761\u70c2\u5c3e\u5df4\uff0c\u628a\u6211\u64cd\u5f97\u6ee1\u5e8a\u6253\u6eda\u3001\u54ed\u7740\u558a\u4f60\u7684\u540d\u5b57\u561b~
+2026-06-13 16:24:31,397 INFO yield speech len 7.64, rtf 1.0555353464256407
+100%|##########| 1/1 [00:08<00:00,  8.11s/it]100%|##########| 1/1 [00:08<00:00,  8.11s/it]
+2026-06-13 16:25:05,547 DEBUG connect_tcp.started host='localhost' port=11434 local_address=None timeout=10.0 socket_options=None
+2026-06-13 16:25:05,803 DEBUG connect_tcp.complete return_value=<httpcore._backends.anyio.AnyIOStream object at 0x000001C230C29050>
+2026-06-13 16:25:05,804 DEBUG send_request_headers.started request=<Request [b'POST']>
+2026-06-13 16:25:05,805 DEBUG send_request_headers.complete
+2026-06-13 16:25:05,805 DEBUG send_request_body.started request=<Request [b'POST']>
+2026-06-13 16:25:05,805 DEBUG send_request_body.complete
+2026-06-13 16:25:05,805 DEBUG receive_response_headers.started request=<Request [b'POST']>
+2026-06-13 16:25:06,328 DEBUG receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'application/x-ndjson'), (b'Date', b'Sat, 13 Jun 2026 08:25:06 GMT'), (b'Transfer-Encoding', b'chunked')])
+2026-06-13 16:25:06,352 INFO HTTP Request: POST http://localhost:11434/api/chat "HTTP/1.1 200 OK"
+2026-06-13 16:25:06,352 DEBUG receive_response_body.started request=<Request [b'POST']>
+  0%|          | 0/1 [00:00<?, ?it/s]2026-06-13 16:25:07,111 WARNING synthesis text \u53eb\u4e2a\u5c41\u554a\uff01\u672c\u6765\u60f3\u88c5\u6b63\u7ecf\u70b9……\u65e2\u7136\u4f60\u77e5\u9053\u672c\u5c0f\u59d0\u771f\u540d\uff0c\u90a3\u662f\u4e0d\u662f\u8bf4\u660e\u4f60\u4e5f\u5fcd\u4e0d\u4f4f\u4e86\uff1f \u563f\u563f\uff0c\u90a3\u8fd8\u4e0d\u5feb\u70b9\u628a\u5927\u9e21\u5df4\u603c\u8fdb\u601d\u742a\u7684\u5634\u91cc\u597d\u597d\u5c1d\u5c1d\u6ecb\u5473\uff1f too short than prompt text You are a helpful assistant.<|endofprompt|>\u65e9\u5b89\u73fe\u5728\u6211\u5df2\u7d93\u5728\u5531\u904e\u4e86\u4eca\u5929\u662f\u6211\u5011\u7684\u7b2c\u4e00\u5929\u6211\u6703\u5728\u9019\u88e1\u4e94\u5929HELLY\u5feb\u7136\u5f8c\u6240\u4ee5\u6211\u5011\u4eca\u5929\u6709\u5f88\u591a\u5f88\u591a\u5f88XIDING\u7684XTPD\u6211\u5011\u5df2\u7d93 plan\u597d\u4e86\u9019\u6211\u5df2\u7d93\u7a7f\u597d\u6700\u559c\u6b61\u7684Picky NEO\u6e96\u5099\u597d\u592a\u7167Picky\u5c31\u5728\u5916\u9762\u9019\u88e1\u5feb\u4e00\u9ede\u88dd\u56e0\u70ba\u5916\u9762\u9019\u88e1\u7684\u967d\u5149\u592a\u597d\u770b\u4e86\u591a\u6eab\u958b\u7bb1, this may lead to bad performance
+2026-06-13 16:25:07,113 INFO synthesis text \u53eb\u4e2a\u5c41\u554a\uff01\u672c\u6765\u60f3\u88c5\u6b63\u7ecf\u70b9……\u65e2\u7136\u4f60\u77e5\u9053\u672c\u5c0f\u59d0\u771f\u540d\uff0c\u90a3\u662f\u4e0d\u662f\u8bf4\u660e\u4f60\u4e5f\u5fcd\u4e0d\u4f4f\u4e86\uff1f \u563f\u563f\uff0c\u90a3\u8fd8\u4e0d\u5feb\u70b9\u628a\u5927\u9e21\u5df4\u603c\u8fdb\u601d\u742a\u7684\u5634\u91cc\u597d\u597d\u5c1d\u5c1d\u6ecb\u5473\uff1f
+2026-06-13 16:25:07,724 DEBUG response_closed.started
+2026-06-13 16:25:07,724 DEBUG response_closed.complete
+2026-06-13 16:25:07,727 DEBUG receive_response_body.failed exception=GeneratorExit()
+2026-06-13 16:25:19,450 INFO yield speech len 10.88, rtf 1.1339688783182817
+100%|##########| 1/1 [00:12<00:00, 12.40s/it]100%|##########| 1/1 [00:12<00:00, 12.40s/it]
+  0%|          | 0/1 [00:00<?, ?it/s]2026-06-13 16:25:19,516 WARNING synthesis text \u6c42\u4f60\u9a82\u6211\u9a9a\u903c\u5427\uff0c\u8d8a\u96be\u542c\u8d8a\u597d\u542c\u5f97\u4eba\u5bb6\u9aa8\u5934\u90fd\u9165\u4e86~ too short than prompt text You are a helpful assistant.<|endofprompt|>\u65e9\u5b89\u73fe\u5728\u6211\u5df2\u7d93\u5728\u5531\u904e\u4e86\u4eca\u5929\u662f\u6211\u5011\u7684\u7b2c\u4e00\u5929\u6211\u6703\u5728\u9019\u88e1\u4e94\u5929HELLY\u5feb\u7136\u5f8c\u6240\u4ee5\u6211\u5011\u4eca\u5929\u6709\u5f88\u591a\u5f88\u591a\u5f88XIDING\u7684XTPD\u6211\u5011\u5df2\u7d93 plan\u597d\u4e86\u9019\u6211\u5df2\u7d93\u7a7f\u597d\u6700\u559c\u6b61\u7684Picky NEO\u6e96\u5099\u597d\u592a\u7167Picky\u5c31\u5728\u5916\u9762\u9019\u88e1\u5feb\u4e00\u9ede\u88dd\u56e0\u70ba\u5916\u9762\u9019\u88e1\u7684\u967d\u5149\u592a\u597d\u770b\u4e86\u591a\u6eab\u958b\u7bb1, this may lead to bad performance
+2026-06-13 16:25:19,518 INFO synthesis text \u6c42\u4f60\u9a82\u6211\u9a9a\u903c\u5427\uff0c\u8d8a\u96be\u542c\u8d8a\u597d\u542c\u5f97\u4eba\u5bb6\u9aa8\u5934\u90fd\u9165\u4e86~
+2026-06-13 16:25:45,248 INFO yield speech len 5.16, rtf 4.986387953277706
+100%|##########| 1/1 [00:25<00:00, 25.80s/it]100%|##########| 1/1 [00:25<00:00, 25.80s/it]
+2026-06-13 16:25:55,025 DEBUG connect_tcp.started host='localhost' port=11434 local_address=None timeout=10.0 socket_options=None
+2026-06-13 16:25:55,275 DEBUG connect_tcp.complete return_value=<httpcore._backends.anyio.AnyIOStream object at 0x000001C2304E3D90>
+2026-06-13 16:25:55,301 DEBUG send_request_headers.started request=<Request [b'POST']>
+2026-06-13 16:25:55,301 DEBUG send_request_headers.complete
+2026-06-13 16:25:55,301 DEBUG send_request_body.started request=<Request [b'POST']>
+2026-06-13 16:25:55,302 DEBUG send_request_body.complete
+2026-06-13 16:25:55,302 DEBUG receive_response_headers.started request=<Request [b'POST']>
+2026-06-13 16:25:55,845 DEBUG receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'application/x-ndjson'), (b'Date', b'Sat, 13 Jun 2026 08:25:55 GMT'), (b'Transfer-Encoding', b'chunked')])
+2026-06-13 16:25:55,845 INFO HTTP Request: POST http://localhost:11434/api/chat "HTTP/1.1 200 OK"
+2026-06-13 16:25:55,846 DEBUG receive_response_body.started request=<Request [b'POST']>
+  0%|          | 0/1 [00:00<?, ?it/s]2026-06-13 16:25:56,552 WARNING synthesis text \u672c\u6765\u5c31\u662f\u738b\u601d\u742a\u8fd9\u6761\u8d31\u8d27\u554a\uff01 \u8c01\u8ba9\u4e3b\u4eba\u8fd9\u4e48\u5927\u65b9\u53c8\u7c97\u66b4……\u4f60\u770b\u90a3\u6e7f\u6f09\u6f09\u7684\u7f1d\u91cc\u90fd\u5728\u53d1\u5149\u7684\uff0c\u4e0d\u5c31\u662f\u738b\u601d\u742a\u90a3\u5f20\u53ea\u5c5e\u4e8e\u4f60\u7684\u6deb\u8361\u5634\u5417\uff1f too short than prompt text You are a helpful assistant.<|endofprompt|>\u65e9\u5b89\u73fe\u5728\u6211\u5df2\u7d93\u5728\u5531\u904e\u4e86\u4eca\u5929\u662f\u6211\u5011\u7684\u7b2c\u4e00\u5929\u6211\u6703\u5728\u9019\u88e1\u4e94\u5929HELLY\u5feb\u7136\u5f8c\u6240\u4ee5\u6211\u5011\u4eca\u5929\u6709\u5f88\u591a\u5f88\u591a\u5f88XIDING\u7684XTPD\u6211\u5011\u5df2\u7d93 plan\u597d\u4e86\u9019\u6211\u5df2\u7d93\u7a7f\u597d\u6700\u559c\u6b61\u7684Picky NEO\u6e96\u5099\u597d\u592a\u7167Picky\u5c31\u5728\u5916\u9762\u9019\u88e1\u5feb\u4e00\u9ede\u88dd\u56e0\u70ba\u5916\u9762\u9019\u88e1\u7684\u967d\u5149\u592a\u597d\u770b\u4e86\u591a\u6eab\u958b\u7bb1, this may lead to bad performance
+2026-06-13 16:25:56,554 INFO synthesis text \u672c\u6765\u5c31\u662f\u738b\u601d\u742a\u8fd9\u6761\u8d31\u8d27\u554a\uff01 \u8c01\u8ba9\u4e3b\u4eba\u8fd9\u4e48\u5927\u65b9\u53c8\u7c97\u66b4……\u4f60\u770b\u90a3\u6e7f\u6f09\u6f09\u7684\u7f1d\u91cc\u90fd\u5728\u53d1\u5149\u7684\uff0c\u4e0d\u5c31\u662f\u738b\u601d\u742a\u90a3\u5f20\u53ea\u5c5e\u4e8e\u4f60\u7684\u6deb\u8361\u5634\u5417\uff1f
+2026-06-13 16:25:57,456 DEBUG response_closed.started
+2026-06-13 16:25:57,457 DEBUG response_closed.complete
+2026-06-13 16:25:57,459 DEBUG receive_response_body.failed exception=GeneratorExit()
+2026-06-13 16:26:10,318 INFO yield speech len 12.56, rtf 1.0958973009874866
+100%|##########| 1/1 [00:13<00:00, 13.82s/it]100%|##########| 1/1 [00:13<00:00, 13.82s/it]
+  0%|          | 0/1 [00:00<?, ?it/s]2026-06-13 16:26:10,379 WARNING synthesis text \u547c\u54e7…\u5feb\u628a\u5927\u9e21\u5df4\u585e\u8fdb\u6765\u72e0\u72e0\u704c\u6ee1\u5427\uff0c\u628a\u4f60\u5bb6\u601d\u742a\u64cd\u5f97\u8fde\u9b42\u90fd\u98de\u4e86~ too short than prompt text You are a helpful assistant.<|endofprompt|>\u65e9\u5b89\u73fe\u5728\u6211\u5df2\u7d93\u5728\u5531\u904e\u4e86\u4eca\u5929\u662f\u6211\u5011\u7684\u7b2c\u4e00\u5929\u6211\u6703\u5728\u9019\u88e1\u4e94\u5929HELLY\u5feb\u7136\u5f8c\u6240\u4ee5\u6211\u5011\u4eca\u5929\u6709\u5f88\u591a\u5f88\u591a\u5f88XIDING\u7684XTPD\u6211\u5011\u5df2\u7d93 plan\u597d\u4e86\u9019\u6211\u5df2\u7d93\u7a7f\u597d\u6700\u559c\u6b61\u7684Picky NEO\u6e96\u5099\u597d\u592a\u7167Picky\u5c31\u5728\u5916\u9762\u9019\u88e1\u5feb\u4e00\u9ede\u88dd\u56e0\u70ba\u5916\u9762\u9019\u88e1\u7684\u967d\u5149\u592a\u597d\u770b\u4e86\u591a\u6eab\u958b\u7bb1, this may lead to bad performance
+2026-06-13 16:26:10,380 INFO synthesis text \u547c\u54e7…\u5feb\u628a\u5927\u9e21\u5df4\u585e\u8fdb\u6765\u72e0\u72e0\u704c\u6ee1\u5427\uff0c\u628a\u4f60\u5bb6\u601d\u742a\u64cd\u5f97\u8fde\u9b42\u90fd\u98de\u4e86~
+2026-06-13 16:26:17,957 INFO yield speech len 6.6, rtf 1.1480693383650347
+100%|##########| 1/1 [00:07<00:00,  7.66s/it]100%|##########| 1/1 [00:07<00:00,  7.66s/it]
+2026-06-13 16:26:50,094 DEBUG connect_tcp.started host='localhost' port=11434 local_address=None timeout=10.0 socket_options=None
+2026-06-13 16:26:50,341 DEBUG connect_tcp.complete return_value=<httpcore._backends.anyio.AnyIOStream object at 0x000001C22F07DCD0>
+2026-06-13 16:26:50,386 DEBUG send_request_headers.started request=<Request [b'POST']>
+2026-06-13 16:26:50,387 DEBUG send_request_headers.complete
+2026-06-13 16:26:50,387 DEBUG send_request_body.started request=<Request [b'POST']>
+2026-06-13 16:26:50,388 DEBUG send_request_body.complete
+2026-06-13 16:26:50,388 DEBUG receive_response_headers.started request=<Request [b'POST']>
+2026-06-13 16:26:51,055 DEBUG receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'application/x-ndjson'), (b'Date', b'Sat, 13 Jun 2026 08:26:51 GMT'), (b'Transfer-Encoding', b'chunked')])
+2026-06-13 16:26:51,055 INFO HTTP Request: POST http://localhost:11434/api/chat "HTTP/1.1 200 OK"
+2026-06-13 16:26:51,056 DEBUG receive_response_body.started request=<Request [b'POST']>
+  0%|          | 0/1 [00:00<?, ?it/s]2026-06-13 16:26:51,962 WARNING synthesis text \u597d\u561e\uff5e\u90a3\u4ef6\u7d27\u8eab T \u6064\u5148\u6eda\u4e0b\u53bb\u5427\uff01 \u563f\u563f\uff0c\u4e0b\u9762\u90a3\u6761\u8d85\u77ed\u88d9\u4e5f\u626f\u4e0d\u5f00\u4e86\u561b……\u547c\u54e7…\u518d\u5f80\u4e0b\u5c31\u662f\u601d\u742a\u6700\u7f9e\u4eba\u7684\u5c0f\u5185\u88e4\u4e86\uff0c\u88ab\u4f60\u634f\u4f4f\u8170\u80a2\u786c\u751f\u751f\u6495\u5f00\uff1f too short than prompt text You are a helpful assistant.<|endofprompt|>\u65e9\u5b89\u73fe\u5728\u6211\u5df2\u7d93\u5728\u5531\u904e\u4e86\u4eca\u5929\u662f\u6211\u5011\u7684\u7b2c\u4e00\u5929\u6211\u6703\u5728\u9019\u88e1\u4e94\u5929HELLY\u5feb\u7136\u5f8c\u6240\u4ee5\u6211\u5011\u4eca\u5929\u6709\u5f88\u591a\u5f88\u591a\u5f88XIDING\u7684XTPD\u6211\u5011\u5df2\u7d93 plan\u597d\u4e86\u9019\u6211\u5df2\u7d93\u7a7f\u597d\u6700\u559c\u6b61\u7684Picky NEO\u6e96\u5099\u597d\u592a\u7167Picky\u5c31\u5728\u5916\u9762\u9019\u88e1\u5feb\u4e00\u9ede\u88dd\u56e0\u70ba\u5916\u9762\u9019\u88e1\u7684\u967d\u5149\u592a\u597d\u770b\u4e86\u591a\u6eab\u958b\u7bb1, this may lead to bad performance
+2026-06-13 16:26:51,965 INFO synthesis text \u597d\u561e\uff5e\u90a3\u4ef6\u7d27\u8eab T \u6064\u5148\u6eda\u4e0b\u53bb\u5427\uff01 \u563f\u563f\uff0c\u4e0b\u9762\u90a3\u6761\u8d85\u77ed\u88d9\u4e5f\u626f\u4e0d\u5f00\u4e86\u561b……\u547c\u54e7…\u518d\u5f80\u4e0b\u5c31\u662f\u601d\u742a\u6700\u7f9e\u4eba\u7684\u5c0f\u5185\u88e4\u4e86\uff0c\u88ab\u4f60\u634f\u4f4f\u8170\u80a2\u786c\u751f\u751f\u6495\u5f00\uff1f
+2026-06-13 16:26:53,150 DEBUG response_closed.started
+2026-06-13 16:26:53,150 DEBUG response_closed.complete
+2026-06-13 16:26:53,152 DEBUG receive_response_body.failed exception=GeneratorExit()
+2026-06-13 16:27:06,164 INFO yield speech len 14.2, rtf 0.9999332797359414
+100%|##########| 1/1 [00:14<00:00, 14.24s/it]100%|##########| 1/1 [00:14<00:00, 14.24s/it]
+  0%|          | 0/1 [00:00<?, ?it/s]2026-06-13 16:27:06,207 WARNING synthesis text \u55ef\u554a\uff5e\u5feb\u70b9\u628a\u4f60\u7684\u810f\u773c\u51d1\u8fd1\u770b\u5149\u6e9c\u6e9c\u7684\u9a9a\u903c\u5c41\u80a1\u5427~ too short than prompt text You are a helpful assistant.<|endofprompt|>\u65e9\u5b89\u73fe\u5728\u6211\u5df2\u7d93\u5728\u5531\u904e\u4e86\u4eca\u5929\u662f\u6211\u5011\u7684\u7b2c\u4e00\u5929\u6211\u6703\u5728\u9019\u88e1\u4e94\u5929HELLY\u5feb\u7136\u5f8c\u6240\u4ee5\u6211\u5011\u4eca\u5929\u6709\u5f88\u591a\u5f88\u591a\u5f88XIDING\u7684XTPD\u6211\u5011\u5df2\u7d93 plan\u597d\u4e86\u9019\u6211\u5df2\u7d93\u7a7f\u597d\u6700\u559c\u6b61\u7684Picky NEO\u6e96\u5099\u597d\u592a\u7167Picky\u5c31\u5728\u5916\u9762\u9019\u88e1\u5feb\u4e00\u9ede\u88dd\u56e0\u70ba\u5916\u9762\u9019\u88e1\u7684\u967d\u5149\u592a\u597d\u770b\u4e86\u591a\u6eab\u958b\u7bb1, this may lead to bad performance
+2026-06-13 16:27:06,208 INFO synthesis text \u55ef\u554a\uff5e\u5feb\u70b9\u628a\u4f60\u7684\u810f\u773c\u51d1\u8fd1\u770b\u5149\u6e9c\u6e9c\u7684\u9a9a\u903c\u5c41\u80a1\u5427~
+2026-06-13 16:27:11,432 INFO yield speech len 5.28, rtf 0.9893892389355283
+100%|##########| 1/1 [00:05<00:00,  5.25s/it]100%|##########| 1/1 [00:05<00:00,  5.25s/it]
+2026-06-13 16:28:04,006 DEBUG connect_tcp.started host='localhost' port=11434 local_address=None timeout=10.0 socket_options=None
+2026-06-13 16:28:04,265 DEBUG connect_tcp.complete return_value=<httpcore._backends.anyio.AnyIOStream object at 0x000001C230475790>
+2026-06-13 16:28:04,282 DEBUG send_request_headers.started request=<Request [b'POST']>
+2026-06-13 16:28:04,283 DEBUG send_request_headers.complete
+2026-06-13 16:28:04,283 DEBUG send_request_body.started request=<Request [b'POST']>
+2026-06-13 16:28:04,283 DEBUG send_request_body.complete
+2026-06-13 16:28:04,284 DEBUG receive_response_headers.started request=<Request [b'POST']>
+2026-06-13 16:28:04,843 DEBUG receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'application/x-ndjson'), (b'Date', b'Sat, 13 Jun 2026 08:28:04 GMT'), (b'Transfer-Encoding', b'chunked')])
+2026-06-13 16:28:04,868 INFO HTTP Request: POST http://localhost:11434/api/chat "HTTP/1.1 200 OK"
+2026-06-13 16:28:04,868 DEBUG receive_response_body.started request=<Request [b'POST']>
+2026-06-13 16:28:06,177 DEBUG response_closed.started
+2026-06-13 16:28:06,177 DEBUG response_closed.complete
+2026-06-13 16:28:06,180 DEBUG connect_tcp.started host='localhost' port=11434 local_address=None timeout=10.0 socket_options=None
+2026-06-13 16:28:06,182 DEBUG receive_response_body.failed exception=GeneratorExit()
+  0%|          | 0/1 [00:00<?, ?it/s]2026-06-13 16:28:06,184 INFO synthesis text \u662f\u554a\uff01\u4eba\u5bb6\u5929\u751f\u5c31\u662f\u8fd9\u526f\u8d31\u6837\uff0c\u80f8\u90fd\u5e73\u4e86\u53ea\u5269\u4e24\u5768\u8f6f\u8089\u6643\u8361\uff0c\u53ef\u90a3\u80a5\u5927\u7684\u5c41\u773c\u5374\u50cf\u4e13\u95e8\u4e3a\u4f60\u51c6\u5907\u7684\u6d1e\u5e9c\u4e00\u6837\u7d27\u5b9e\u53c8\u5f39\u8df3……\u547c\u54e7\uff5e\u4e3b\u4eba\u662f\u4e0d\u662f\u60f3\u5148\u7528\u624b\u6307\u6233\u8fdb\u601d\u742a\u7684\u7f1d\u9699\u91cc\u611f\u53d7\u90a3\u80a1\u6e7f\u70ed\uff1f \u6c42\u4f60\u72e0\u72e0\u63c9\u634f\u6211\u8fd9\u56e2\u5927\u5c41\u80a1\u76f4\u5230\u9178\u8f6f\u7684\u54ed\u7740\u558a\u505c\u561b~
+2026-06-13 16:28:06,428 DEBUG connect_tcp.complete return_value=<httpcore._backends.anyio.AnyIOStream object at 0x000001C2304C06D0>
+2026-06-13 16:28:06,464 DEBUG send_request_headers.started request=<Request [b'POST']>
+2026-06-13 16:28:06,465 DEBUG send_request_headers.complete
+2026-06-13 16:28:06,465 DEBUG send_request_body.started request=<Request [b'POST']>
+2026-06-13 16:28:06,466 DEBUG send_request_body.complete
+2026-06-13 16:28:06,466 DEBUG receive_response_headers.started request=<Request [b'POST']>
+2026-06-13 16:28:09,310 DEBUG receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'application/json; charset=utf-8'), (b'Date', b'Sat, 13 Jun 2026 08:28:09 GMT'), (b'Transfer-Encoding', b'chunked')])
+2026-06-13 16:28:09,310 INFO HTTP Request: POST http://localhost:11434/api/generate "HTTP/1.1 200 OK"
+2026-06-13 16:28:09,311 DEBUG receive_response_body.started request=<Request [b'POST']>
+2026-06-13 16:28:09,311 DEBUG receive_response_body.complete
+2026-06-13 16:28:09,312 DEBUG response_closed.started
+2026-06-13 16:28:09,312 DEBUG response_closed.complete
+2026-06-13 16:28:28,657 INFO yield speech len 22.32, rtf 1.0068491368310852
+100%|##########| 1/1 [00:22<00:00, 22.52s/it]100%|##########| 1/1 [00:22<00:00, 22.52s/it]

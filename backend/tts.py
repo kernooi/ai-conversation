@@ -14,6 +14,7 @@ import os
 import sys
 import threading
 import time
+from hashlib import sha1
 from pathlib import Path
 
 from config import settings
@@ -21,6 +22,8 @@ from config import settings
 _model = None
 _model_lock = threading.Lock()
 _synth_lock = threading.Lock()
+_speaker_cache_lock = threading.Lock()
+_speaker_cache: dict[tuple[str, str, int, int, str, bool], str] = {}
 
 SUPPORTED_EXTS = (".wav", ".mp3", ".m4a", ".ogg", ".flac", ".aac")
 REQUIRED_MODEL_FILES = (
@@ -216,6 +219,48 @@ def _normalize_text(text: str, language: str | None) -> str:
     return clean
 
 
+def _speaker_cache_key(
+    voice_name: str,
+    prompt_wav: Path,
+    prompt_text: str,
+    text_frontend: bool,
+) -> tuple[str, str, int, int, str, bool]:
+    stat = prompt_wav.stat()
+    prompt_hash = sha1(prompt_text.encode("utf-8")).hexdigest()
+    return (
+        voice_name,
+        str(prompt_wav.resolve()),
+        stat.st_mtime_ns,
+        stat.st_size,
+        prompt_hash,
+        text_frontend,
+    )
+
+
+def _zero_shot_spk_id(model, voice_name: str, prompt_wav: Path, prompt_text: str, text_frontend: bool) -> str:
+    """Cache CosyVoice3 prompt audio/text features for a reference voice."""
+    key = _speaker_cache_key(voice_name, prompt_wav, prompt_text, text_frontend)
+    cached = _speaker_cache.get(key)
+    if cached:
+        return cached
+
+    with _speaker_cache_lock:
+        cached = _speaker_cache.get(key)
+        if cached:
+            return cached
+
+        cache_id = f"voice_{sha1('|'.join(map(str, key)).encode('utf-8')).hexdigest()[:20]}"
+        started = time.perf_counter()
+        model.add_zero_shot_spk(prompt_text, str(prompt_wav), cache_id)
+        _speaker_cache[key] = cache_id
+        print(
+            "[tts] cached CosyVoice3 speaker "
+            f"voice={voice_name} elapsed={time.perf_counter() - started:.2f}s",
+            flush=True,
+        )
+        return cache_id
+
+
 def synthesize(
     text: str,
     out_path: str,
@@ -239,9 +284,11 @@ def synthesize(
         mode = settings.cosyvoice_mode.lower()
         text_frontend = settings.cosyvoice_text_frontend
         if mode == "cross_lingual":
+            zero_shot_spk_id = _zero_shot_spk_id(model, voice_name, prompt_wav, prompt_text, text_frontend)
             generator = model.inference_cross_lingual(
                 tts_text,
                 str(prompt_wav),
+                zero_shot_spk_id=zero_shot_spk_id,
                 stream=False,
                 speed=settings.cosyvoice_speed,
                 text_frontend=text_frontend,
@@ -256,10 +303,12 @@ def synthesize(
                 text_frontend=text_frontend,
             )
         else:
+            zero_shot_spk_id = _zero_shot_spk_id(model, voice_name, prompt_wav, prompt_text, text_frontend)
             generator = model.inference_zero_shot(
                 tts_text,
                 prompt_text,
                 str(prompt_wav),
+                zero_shot_spk_id=zero_shot_spk_id,
                 stream=False,
                 speed=settings.cosyvoice_speed,
                 text_frontend=text_frontend,

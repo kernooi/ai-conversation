@@ -4,11 +4,10 @@ import { RefObject, useCallback, useRef } from "react";
 import { ApiError, synthesizeSpeech } from "./api";
 
 /**
- * Plays synthesized speech sentence-by-sentence with overlap:
- * each enqueued sentence starts synthesizing immediately (in parallel), while
- * playback happens strictly in enqueue order. So sentence N+1 is being
- * synthesized on the server while sentence N is still playing, cutting
- * time-to-first-audio to roughly (first sentence gen + first sentence synth).
+ * Plays synthesized speech chunks with overlap:
+ * each enqueued chunk starts synthesizing immediately, while playback happens
+ * strictly in enqueue order. The page decides chunk size so TTS does not have
+ * to pay model overhead for every tiny sentence.
  */
 export function useSpeechQueue(voiceRef: RefObject<string>, onError?: (message: string) => void) {
   const queueRef = useRef<Array<Promise<Blob | null>>>([]);

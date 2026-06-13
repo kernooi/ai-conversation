@@ -1,0 +1,56 @@
+[warm-up] preloading: LLM...
+[warm-up] preloading: TTS...
+[tts] loading CosyVoice3 from D:\ai-conversation-models\Fun-CosyVoice3-0.5B
+Downloading Model to directory: C:\Users\User\.cache\modelscope\hub\pengzhendong/wetext
+Downloading Model to directory: C:\Users\User\.cache\modelscope\hub\pengzhendong/wetext
+[tts] cached CosyVoice3 speaker voice=default elapsed=3.55s
+[tts] cosyvoice3 synth elapsed=39.67s chars=3 voice=default mode=zero_shot
+[warm-up] preloading: STT...
+[stt] loading Whisper 'base' on cpu (int8)
+[warm-up] done
+INFO:     127.0.0.1:50797 - "GET /voices HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50798 - "GET /health HTTP/1.1" 200 OK
+[tts] cosyvoice3 synth elapsed=2.82s chars=11 voice=default mode=zero_shot
+INFO:     127.0.0.1:54950 - "POST /tts HTTP/1.1" 200 OK
+[tts] cosyvoice3 synth elapsed=3.98s chars=20 voice=default mode=zero_shot
+INFO:     127.0.0.1:54950 - "POST /tts HTTP/1.1" 200 OK
+[tts] cosyvoice3 synth elapsed=5.18s chars=21 voice=default mode=zero_shot
+INFO:     127.0.0.1:54950 - "POST /tts HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56173 - "GET /voices HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62719 - "GET /voices HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53923 - "OPTIONS /chat/stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53923 - "POST /chat/stream HTTP/1.1" 200 OK
+[ollama] stream elapsed=2.42s first_content=1.23s content_chars=98 hidden_thinking_chars=0 eval_tokens=70 eval_tok_s=58.9 prompt_tokens=272 prompt_tok_s=1965.1
+INFO:     127.0.0.1:54903 - "POST /chat/stream HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52806 - "OPTIONS /tts HTTP/1.1" 200 OK
+[ollama] stream elapsed=1.75s first_content=0.79s content_chars=79 hidden_thinking_chars=0 eval_tokens=59 eval_tok_s=60.8 prompt_tokens=359 prompt_tok_s=1423.7
+[tts] cosyvoice3 synth elapsed=13.36s chars=80 voice=default mode=zero_shot
+INFO:     127.0.0.1:52806 - "POST /tts HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64799 - "POST /chat/stream HTTP/1.1" 200 OK
+[ollama] stream elapsed=2.47s first_content=0.83s content_chars=79 hidden_thinking_chars=0 eval_tokens=60 eval_tok_s=37.1 prompt_tokens=433 prompt_tok_s=1401.7
+[tts] cosyvoice3 synth elapsed=11.96s chars=47 voice=default mode=zero_shot
+INFO:     127.0.0.1:54241 - "POST /tts HTTP/1.1" 200 OK
+[tts] cosyvoice3 synth elapsed=18.92s chars=33 voice=default mode=zero_shot
+INFO:     127.0.0.1:64799 - "POST /tts HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65510 - "POST /chat/stream HTTP/1.1" 200 OK
+[ollama] stream elapsed=2.18s first_content=0.81s content_chars=87 hidden_thinking_chars=0 eval_tokens=65 eval_tok_s=46.6 prompt_tokens=506 prompt_tok_s=1736.6
+[tts] cosyvoice3 synth elapsed=12.43s chars=65 voice=default mode=zero_shot
+INFO:     127.0.0.1:62073 - "POST /tts HTTP/1.1" 200 OK
+[tts] cosyvoice3 synth elapsed=37.59s chars=23 voice=default mode=zero_shot
+INFO:     127.0.0.1:65510 - "POST /tts HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61553 - "POST /chat/stream HTTP/1.1" 200 OK
+[ollama] stream elapsed=2.43s first_content=0.82s content_chars=89 hidden_thinking_chars=0 eval_tokens=71 eval_tok_s=44.1 prompt_tokens=579 prompt_tok_s=2088.1
+[tts] cosyvoice3 synth elapsed=13.83s chars=60 voice=default mode=zero_shot
+INFO:     127.0.0.1:61593 - "POST /tts HTTP/1.1" 200 OK
+[tts] cosyvoice3 synth elapsed=20.58s chars=30 voice=default mode=zero_shot
+INFO:     127.0.0.1:61553 - "POST /tts HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55377 - "POST /chat/stream HTTP/1.1" 200 OK
+[ollama] stream elapsed=3.06s first_content=0.96s content_chars=89 hidden_thinking_chars=0 eval_tokens=72 eval_tok_s=34.4 prompt_tokens=579 prompt_tok_s=1459.8
+[tts] cosyvoice3 synth elapsed=14.24s chars=67 voice=default mode=zero_shot
+INFO:     127.0.0.1:61093 - "POST /tts HTTP/1.1" 200 OK
+[tts] cosyvoice3 synth elapsed=18.31s chars=23 voice=default mode=zero_shot
+INFO:     127.0.0.1:55377 - "POST /tts HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61439 - "POST /chat/stream HTTP/1.1" 200 OK
+[ollama] stream elapsed=2.17s first_content=0.86s content_chars=105 hidden_thinking_chars=0 eval_tokens=80 eval_tok_s=60.0 prompt_tokens=604 prompt_tok_s=2566.9
+[tts] cosyvoice3 synth elapsed=22.53s chars=106 voice=default mode=zero_shot
+INFO:     127.0.0.1:61439 - "POST /tts HTTP/1.1" 200 OK
